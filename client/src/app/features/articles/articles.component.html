@@ -265,22 +265,22 @@
                 </div>
             </td>
             <td class="article-type-cell" *ngIf="authorized">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.articleTypeName" tooltipPosition="top">
                     <span class="">{{article.articleTypeName}}</span>
                 </div>
             </td>
             <td class="article-featured-cell" *ngIf="authorized">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.featured" tooltipPosition="top">
                     <span class="">{{article.featured}}</span>
                 </div>
             </td>
             <td class="article-category-cell">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.categoryName" tooltipPosition="top">
                     <span class="">{{article.categoryName}}</span>
                 </div>
             </td>
             <td class="article-source-cell" *ngIf="authorized">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.sourceName" tooltipPosition="top">
                     <span class="">{{article.sourceName}}</span>
                 </div>
             </td>
@@ -295,7 +295,7 @@
                 </div>
             </td>
             <td class="article-subject-cell">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.subject" tooltipPosition="top">
                     <span class="">{{article.subject}}</span>
                 </div>
             </td>
