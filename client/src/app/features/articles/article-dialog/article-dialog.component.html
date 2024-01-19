@@ -1,0 +1,361 @@
+<div class="" [formGroup]="formGroup">
+    <div class="h-20rem">
+        <p-tabView [(activeIndex)]="activeIndex">
+            <p-tabPanel header="Title / Link / Type / Category / Source">
+                <div class="flex gap-4 justify-content-between gap-8">
+                    <div class="w-32rem">
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Post Title</span>
+                            </div>
+                            <div class="">
+                                <input
+                                    formControlName="title"
+                                    type="text" pInputText
+                                    class="w-20rem"
+                                    placeholder="Title">
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Post Link</span>
+                            </div>
+                            <div class="flex gap-2 align-items-center">
+                                <div class="">
+                                    <input
+                                        #titleLink
+                                        formControlName="link"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="Link">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-caret-right"
+                                        [disabled]="!titleLink.value"
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="parseLink()">
+                                    </p-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-32rem">
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Article Type</span>
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                            @if (fieldModes.articleTypeId) {
+                                <div class="">
+                                    <p-dropdown
+                                        formControlName="articleTypeId" [options]="articleTypes"
+                                        [filter]="true" filterBy="name"
+                                        optionValue="id" optionLabel="name"
+                                        styleClass="w-20rem"
+                                        appendTo="body"
+                                        placeholder="Select an Article Type">
+                                    </p-dropdown>
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-plus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({articleTypeId:false})">
+                                    </p-button>
+                                </div>
+                            } @else {
+                                <div class="" formGroupName="addeds">
+                                    <input
+                                        formControlName="articleTypeName"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="New Article Type">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-minus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({articleTypeId:true})">
+                                    </p-button>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Source</span>
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                            @if (fieldModes.sourceId) {
+                                <div class="">
+                                    <p-dropdown
+                                        formControlName="sourceId" [options]="sources"
+                                        [filter]="true" filterBy="name"
+                                        optionValue="id" optionLabel="name"
+                                        styleClass="w-20rem"
+                                        appendTo="body"
+                                        placeholder="Select a Source">
+                                    </p-dropdown>
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-plus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({sourceId:false})">
+                                    </p-button>
+                                </div>
+                            } @else {
+                                <div class="" formGroupName="addeds">
+                                    <input
+                                        formControlName="sourceName"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="New Source">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-minus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({sourceId:true})">
+                                    </p-button>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Category</span>
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                            @if (fieldModes.categoryId) {
+                                <div class="">
+                                    <p-dropdown
+                                        formControlName="categoryId" [options]="categories"
+                                        [filter]="true" filterBy="name"
+                                        optionValue="id" optionLabel="name"
+                                        styleClass="w-20rem"
+                                        appendTo="body"
+                                        placeholder="Select a Category">
+                                    </p-dropdown>
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-plus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({categoryId:false})">
+                                    </p-button>
+                                </div>
+                            } @else {
+                                <div class="" formGroupName="addeds">
+                                    <input
+                                        formControlName="categoryName"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="New Category">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-minus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({categoryId:true})">
+                                    </p-button>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Featured / Author / Link / Dates / Tags">
+                <div class="flex justify-content-between gap-8">
+                    <div class="w-32rem">
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Featured</span>
+                            </div>
+                            <div class="">
+                                <input
+                                    formControlName="featured"
+                                    type="text" pInputText
+                                    class="w-20rem"
+                                    placeholder="Featured">
+                            </div>
+                        </div>
+                        <div *ngIf="!fieldModes.authorId" class="flex align-items-center mb-2" formGroupName="addeds">
+                            <div class="w-8rem">
+                                <span class="">Author Link</span>
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                                <div class="">
+                                    <input
+                                        #authorLink
+                                        formControlName="authorLink"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="New Author Link">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-caret-right"
+                                        [disabled]="!authorLink.value"
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="parseAuthorLink()">
+                                    </p-button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Author <ng-container *ngIf="!fieldModes.authorId">Name</ng-container></span>
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                            @if (fieldModes.authorId) {
+                                <div class="">
+                                    <p-dropdown
+                                        formControlName="authorId" [options]="authors"
+                                        [filter]="true" filterBy="name"
+                                        optionValue="id" optionLabel="name"
+                                        styleClass="w-20rem"
+                                        appendTo="body"
+                                        placeholder="Select an Author">
+                                    </p-dropdown>
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-plus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({authorId:false})">
+                                    </p-button>
+                                </div>
+                            } @else {
+                                <div class="" formGroupName="addeds">
+                                    <input
+                                        formControlName="authorName"
+                                        type="text" pInputText
+                                        class="w-20rem"
+                                        placeholder="New Author">
+                                </div>
+                                <div class="">
+                                    <p-button
+                                        icon="pi pi-minus-circle"
+                                        styleClass=""
+                                        [rounded]="true" [text]="true" [plain]="true"
+                                        (click)="changeFieldModes({authorId:true})">
+                                    </p-button>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-32rem">
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Article Date</span>
+                            </div>
+                            <div class="flex align-items-center">
+                                <p-calendar
+                                    formControlName="date"
+                                    placeholder="Select an Article Date"
+                                    dateFormat="dd-M-yy" dataType="string"
+                                    inputStyleClass="datepicker-input w-20rem"
+                                    [showIcon]="true"
+                                    appendTo="body">
+                                </p-calendar>
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Issue Date</span>
+                            </div>
+                            <div class="flex align-items-center">
+                                <p-calendar
+                                    formControlName="edition"
+                                    placeholder="Select an Issue Date"
+                                    dateFormat="dd-M-yy" dataType="string"
+                                    inputStyleClass="datepicker-input w-20rem"
+                                    [showIcon]="true"
+                                    appendTo="body">
+                                </p-calendar>
+                            </div>
+                        </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Tags</span>
+                            </div>
+                            <div class="flex align-items-center">
+                                <p-multiSelect
+                                    [options]="tags"
+                                    formControlName="tags" 
+                                    placeholder="Select Tags"
+                                    styleClass="w-20rem"
+                                    appendTo="body">
+                                    <ng-template pTemplate="footer">
+                                        <div class="flex align-items-center gap-2 p-multiselect-header">
+                                            <div class="">
+                                                <input
+                                                    #tagInput pInputText type="text"
+                                                    (keydown.enter)="createTag(tagInput)"
+                                                    class="w-12"
+                                                    placeholder="Add Tag" />
+                                            </div>
+                                            <div class="">
+                                                <p-button
+                                                    icon="pi pi-plus" size="small"
+                                                    [rounded]="true" [outlined]="true"
+                                                    [disabled]="!tagInput.value || tagInput.value.length < 2"
+                                                    (click)="createTag(tagInput)">
+                                                </p-button>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+    <div class="flex justify-content-between align-items-center">
+        <div class="flex gap-2">
+            <p-button
+                styleClass="w-2rem h-2rem p-0"
+                [rounded]="true" [outlined]="activeIndex!=0"
+                label="1"
+                (click)="activeIndex=0">
+            </p-button>
+            <p-button
+                styleClass="w-2rem h-2rem p-0"
+                [rounded]="true" [outlined]="activeIndex!=1"
+                label="2"
+                (click)="activeIndex=1">
+            </p-button>
+        </div>
+        <div class="flex gap-3">
+            <div class="">
+                <p-button
+                    label="Cancel"
+                    [rounded]="true" [text]="true"
+                    (click)="onCancel()">
+                </p-button>
+            </div>
+            <div class="">
+                <p-button
+                    label="Submit"
+                    icon="pi pi-check" 
+                    [disabled]="formGroup.invalid || inproccess"
+                    [rounded]="true" [outlined]="true"
+                    (click)="onSubmit()">
+                </p-button>
+            </div>
+        </div>
+    </div>
+</div>

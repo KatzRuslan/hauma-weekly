@@ -1,0 +1,39 @@
+<div class="flex align-items-center hover-container" [class]="styleClass" (document.keyup.esc)="changeMode(false)">
+    @if (mode) {
+        <p-dropdown
+            [(ngModel)]="value" [options]="options"
+            [optionLabel]="optionLabel" [optionValue]="optionValue"
+            [styleClass]="inputStyleClass"
+            placeholder="placeholder"
+            appendTo="body">
+        </p-dropdown>
+        <div class="flex align-items-center flex-nowrap px-1">
+            <p-button
+                icon="pi pi-save" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                [disabled]="!dropdownValue || dropdownValue==value"
+                (onClick)="changeValue()">
+            </p-button>
+            <p-button
+                icon="pi pi-times" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                (onClick)="changeMode(false)">
+            </p-button>
+        </div>
+    } @else {
+        <div [class]="textStyleClass" class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip pTooltip="{{displayValue}}" tooltipPosition="top">
+            @if (link) {
+                <a [href]="link" target="_blank" class="text-color no-underline hover:underline">{{displayValue}}</a>
+            } @else {
+                <span class="">{{displayValue}}</span>
+            }
+        </div>
+        <div class="toggle-edit-mode-button-container hover-source px-1">
+            <p-button
+                icon="pi pi-pencil" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                (onClick)="changeMode(true)">
+            </p-button>
+        </div>
+    }
+</div>

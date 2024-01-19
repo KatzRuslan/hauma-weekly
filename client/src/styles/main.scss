@@ -1,0 +1,79 @@
+@use "./lib/variables" as variables;
+@use "./lib/mixins" as mixins;
+// @forward "../../node_modules/primeng/resources/themes/md-dark-indigo/theme.css";
+// @forward "../../node_modules/primeng/resources/themes/mdc-dark-deeppurple/theme.css";
+// @forward "../../node_modules/primeng/resources/themes/lara-dark-indigo/theme.css";
+// @forward "../../node_modules/primeng/resources/themes/bootstrap4-dark-purple/theme.css";
+// @forward "../../node_modules/primeng/resources/themes/bootstrap4-dark-blue/theme.css";
+// @forward "../../node_modules/primeng/resources/themes/lara-light-blue/theme.css";
+html.fluid-font-size {
+    $min_width: map-get(variables.$configs, 'min_width');
+    $max_width: map-get(variables.$configs, 'max_width');
+    $min_font: map-get(variables.$configs, 'min_font');
+    $max_font: map-get(variables.$configs, 'max_font');
+    @include mixins.fluid-type($min_width, $max_width, $min_font, $max_font);
+}
+body {
+    cursor: default;
+}
+
+.datepicker-input {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    & ~ .p-datepicker-trigger {
+        background: transparent;
+        color: var(--text-color);
+        border: 0;
+        margin-left: -3rem;
+    }
+}
+.p-button.p-button-icon-only.p-button-rounded {
+    height: 2.6rem;
+    width: 2.6rem;
+}
+.p-tooltip {
+    max-width: 18rem;
+}
+.p-button.p-button-icon-only.table-icon-button {
+    $dim: 1.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $dim * .5;
+    padding: 0;
+    min-width: $dim;
+    max-width: $dim;
+    min-height: $dim;
+    max-height: $dim;
+    .pi {
+        font-size: .6rem;
+        font-weight: 700;
+    }
+}
+.p-inputtext.table-input-text, .table-input-text > .p-inputtext {
+    padding: 0.5rem;
+}
+.p-button.p-datepicker-trigger.p-button-icon-only {
+    padding: 0.7rem 0;
+}
+.hover-container {
+    .hover-source {
+        visibility: hidden;
+    }
+    &:hover .hover-source {
+        visibility: visible;
+    }
+}
+.hover\:visible-none {
+    visibility: visible;
+}
+
+.p-datatable .p-datatable-tbody > tr > th,
+.p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.5rem;
+}
+
+
+
+
+

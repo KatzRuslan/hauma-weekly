@@ -1,0 +1,34 @@
+<div class="flex align-items-center hover-container" [class]="styleClass" (document.keyup.esc)="changeMode(false)">
+    @if (mode) {
+        <p-calendar
+            [(ngModel)]="calendarValue"
+            [placeholder]="placeholder"
+            dateFormat="dd-M-yy" dataType="string"
+            [inputStyleClass]="inputStyleClass"
+            [showIcon]="true"
+            appendTo="body">
+        </p-calendar>
+        <div class="flex align-items-center flex-nowrap px-1">
+            <p-button
+                icon="pi pi-save" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                [disabled]="!calendarValue || calendarValue==value"
+                (onClick)="changeValue()">
+            </p-button>
+            <p-button
+                icon="pi pi-times" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                (onClick)="changeMode(false)">
+            </p-button>
+        </div>
+    } @else {
+        <div [class]="textStyleClass"><span class="">{{value | date : 'dd-MMM-YYYY'}}</span></div>
+        <div class="toggle-edit-mode-button-container hover-source px-1">
+            <p-button
+                icon="pi pi-pencil" [styleClass]="buttonStyleClass"
+                [rounded]="true" [text]="true" [plain]="true"
+                (onClick)="changeMode(true)">
+            </p-button>
+        </div>
+    }
+</div>

@@ -1,0 +1,52 @@
+
+.article-date-cell, .article-edition-cell {
+    $width: 9.4rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-type-cell {
+    $width: 9rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-featured-cell {
+    $width: 10rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-category-cell {
+    $width: 11rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-source-cell {
+    $width: 11rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-author-cell {
+    $width: 12rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-title-cell {
+    $width: 30rem;
+    $width: 16rem;
+    // $width: 10rem;
+    min-width: $width;
+    max-width: $width;
+}
+.article-trach-cell {
+    $width: 3rem;
+    min-width: $width;
+    max-width: $width;
+}
+:host ::ng-deep {
+    .articles-table {
+        &:not(.authorized) {
+            .p-datatable-footer, .toggle-edit-mode-button-container {
+                display: none;
+            }
+        }
+    }
+}

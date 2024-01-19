@@ -1,0 +1,8 @@
+:host ::ng-deep {
+    .settings-menu {
+        width: 24rem;
+    }
+    .settings-page {
+        width: calc(100vw - 24rem);
+    }
+}

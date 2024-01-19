@@ -1,0 +1,47 @@
+<header class="flex justify-content-between align-items-center px-2 py-1 w-12 main-header-container">
+    <div class="">
+        <a [routerLink]="['/']" class="">
+            <img src="assets/images/logo.png" alt="" class="main-header-logo">
+        </a>
+    </div>
+    <div class="flex align-items-center gap-2">
+        <ng-container *ngIf="(userFullName$ | async) as fullName; else NotAuthorized">
+            <ng-container [ngTemplateOutlet]="Authorized" [ngTemplateOutletContext]="{ fullName }"></ng-container>
+        </ng-container>
+    </div>
+    <!-- Шломо Бунимович -->
+    <!-- pi-sign-in -->
+</header>
+<ng-template #Authorized let-fullName="fullName">
+    <div class=""><span class="">{{fullName}}</span></div>
+    <div class="">
+        <p-button
+            icon="pi pi-sign-out"
+            styleClass="text-sm w-2rem h-2rem"
+            pTooltip="Sign Out" tooltipPosition="bottom"
+            [rounded]="true" [outlined]="true" [plain]="true"
+            (onClick)="signOut()">
+        </p-button>
+    </div>
+    <div class="" *ngIf="0">
+        <a [routerLink]="['/settings']" class="">
+            <p-button
+                icon="pi pi-cog"
+                styleClass="w-2rem h-2rem"
+                pTooltip="Settings" tooltipPosition="left"
+                [rounded]="true" [outlined]="true" [plain]="true">
+            </p-button>
+        </a>
+    </div>
+</ng-template>
+<ng-template #NotAuthorized>
+    <div class="">
+        <p-button
+            icon="pi pi-sign-in"
+            styleClass="text-sm w-2rem h-2rem"
+            pTooltip="Sign In" tooltipPosition="bottom"
+            [rounded]="true" [outlined]="true" [plain]="true"
+            (onClick)="signIn()">
+        </p-button>
+    </div>
+</ng-template>

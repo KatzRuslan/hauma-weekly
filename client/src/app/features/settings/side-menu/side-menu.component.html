@@ -1,0 +1,9 @@
+<nav class="surface-50 h-full border-top-1 border-200">
+    <ul class="list-none m-0 p-2">
+        @for (nav of navigations; track $index) {
+            <li class="m-2 surface-100">
+                <a [routerLink]="nav.routerLink" routerLinkActive="text-primary-600 font-bold" class="block text-primary-400 py-2 px-3 no-underline"><span class="">{{nav.name}}</span></a>
+            </li>
+        }
+    </ul>
+</nav>
