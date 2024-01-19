@@ -15117,15 +15117,6 @@
 			"id": "9699-aa2ce-d904b"
 		},
 		{
-			"name": "X",
-			"selector": "x",
-			"provides": [
-				"x",
-				"twitter"
-			],
-			"id": "6ad8-a9944-8da76"
-		},
-		{
 			"name": "Video",
 			"selector": "video",
 			"provides": [
@@ -15365,6 +15356,15 @@
 	],
 	"tags": [],
 	"users": [
+		{
+			"id": "8b8-ud9e-99834",
+			"fullname": "Шломо Бунимович",
+			"role": "admin",
+			"credentials": {
+				"username": "admin",
+				"password": "1234"
+			}
+		},
 		{
 			"id": "7c7-uh5u-77612",
 			"fullname": "Daniel Berko",

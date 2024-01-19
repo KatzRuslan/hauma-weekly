@@ -24,6 +24,11 @@ export class SignInComponent {
     });
     public inproccess = false;
     public errorMessage?: string;
+    onKeyUpEnter() {
+        if (this.formGroup.valid) {
+            this.onSubmit();
+        }
+    }
     onSubmit() {
         this.errorMessage = undefined;
         this.inproccess = true;
@@ -44,7 +49,7 @@ export class SignInComponent {
     }
     // constructor() {
     //     setTimeout(() => {
-    //         this.formGroup.patchValue({ username: 'admin', password: '1234' });
+    //         this.formGroup.patchValue({ username: 'Daniel', password: 'Daniel2024$' });
     //     }, 120);
     // }
 }

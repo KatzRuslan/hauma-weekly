@@ -3,12 +3,7 @@ import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ArticleActions } from '@actions/article.actions';
 import { ArticleService } from '@shared/services/article.service';
-// import { AppActions } from '@actions/app.actions';
-// import { SettingsActions } from '@actions/settings.actions';
-// import { getEnvironments } from '@selectors/settings.selectors';
-// import { SettingsService } from '@settings/settings.service';
-import { catchError, firstValueFrom, forkJoin, lastValueFrom, map, mergeMap, of, switchMap, tap, withLatestFrom} from 'rxjs';
-// import { IEnvironment, IUser } from '@shared/interfaces/settings.interfaces';
+import { catchError, forkJoin, map, mergeMap, of, switchMap, tap} from 'rxjs';
 
 @Injectable()
 export class ArticlesEffects {
@@ -65,7 +60,7 @@ export class ArticlesEffects {
                     }).reduce((total, current) => ({...total, ...current}), {});
                     return { article, forkObj };
                 }),
-                switchMap(({ article, forkObj }) => forkJoin(forkObj).pipe(
+                switchMap(({ article, forkObj }) => (Object.keys(forkObj).length ? forkJoin(forkObj) : of({})).pipe(
                     map(() => {
                         callback();
                         return ArticleActions.addArticleSuccess({ article });
@@ -82,17 +77,55 @@ export class ArticlesEffects {
         () => this._actions$.pipe(
             ofType(ArticleActions.updateArticle),
             mergeMap(({ articleId, article, callback }) => this._articleService.updateArticle(articleId, article).pipe(
-                map(() => {
-                    callback();
-                    return ArticleActions.updateArticleSuccess({ articleId, article });
+                map(({ article, updates }) => {
+                    const forkObj = updates.map((key) => {
+                        let observe;
+                        switch (key) {
+                            case 'author':
+                                observe = this._articleService.getAuthors().pipe(
+                                    tap((authors) => this._store$.dispatch(ArticleActions.getAuthorsSuccess({ authors })))
+                                );
+                                break;
+                            case 'articleType':
+                                observe = this._articleService.getArticleTypes().pipe(
+                                    tap((articleTypes) => this._store$.dispatch(ArticleActions.getArticleTypesSuccess({ articleTypes })))
+                                );
+                                break;                        
+                            case 'source':
+                                observe = this._articleService.getSources().pipe(
+                                    tap((sources) => this._store$.dispatch(ArticleActions.getSourcesSuccess({ sources })))
+                                );
+                                break;                        
+                            case 'category':
+                                observe = this._articleService.getCategories().pipe(
+                                    tap((categories) => this._store$.dispatch(ArticleActions.getCategoriesSuccess({ categories })))
+                                );
+                                break;                        
+                            case 'tag':
+                                observe = this._articleService.getTags().pipe(
+                                    tap((tags) => this._store$.dispatch(ArticleActions.getTagsSuccess({ tags })))
+                                );
+                                break;                        
+                            default:
+                                return {};
+                        }
+                        return { [key]: observe };
+                    }).reduce((total, current) => ({...total, ...current}), {});
+                    return { article, forkObj };
                 }),
+                switchMap(({ article, forkObj }) => (Object.keys(forkObj).length ? forkJoin(forkObj) : of({})).pipe(
+                    map(() => {
+                        callback();
+                        return ArticleActions.updateArticleSuccess({ articleId, article });
+                    })
+                )),
                 catchError((error) => {
                     callback(error);
                     return of(ArticleActions.emptyArticleEvent())
                 })
             ))
         )
-    ); 
+    );
     removeArticle$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.removeArticle),

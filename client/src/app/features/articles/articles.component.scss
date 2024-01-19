@@ -1,46 +1,18 @@
+@use "sass:map";
 
-.article-date-cell, .article-edition-cell {
-    $width: 9.4rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-type-cell {
-    $width: 9rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-featured-cell {
-    $width: 10rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-category-cell {
-    $width: 11rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-source-cell {
-    $width: 11rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-author-cell {
-    $width: 12rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-title-cell {
-    $width: 30rem;
-    $width: 16rem;
-    // $width: 10rem;
-    min-width: $width;
-    max-width: $width;
-}
-.article-trach-cell {
-    $width: 3rem;
-    min-width: $width;
-    max-width: $width;
-}
+$styles: (
+    "date": ("authorized-width": 9rem, "unauthorized-width": 9rem, "background": red),
+    "type": ("authorized-width": 8rem, "unauthorized-width": 0, "background": rgba(0, 128, 0, 0.359)),
+    "featured": ("authorized-width": 8rem, "unauthorized-width": 0, "background": rgba(238, 255, 0, 0.421)),
+    "category": ("authorized-width": 8rem, "unauthorized-width": 8rem, "background": rgba(153, 0, 255, 0.157)),
+    "source": ("authorized-width": 8rem, "unauthorized-width": 0, "background": rgba(51, 255, 0, 0.246)),
+    "author": ("authorized-width": 8rem, "unauthorized-width": 16rem, "background": rgba(0, 0, 255, 0.205)),
+    "title": ("authorized-width": 12.6rem, "unauthorized-width": 34rem, "background": rgba(255, 47, 0, 0.153)),
+    "subject": ("authorized-width": 8rem, "unauthorized-width": 8rem, "background": rgba(255, 247, 0, 0.22)),
+    "edition": ("authorized-width": 10.2rem, "unauthorized-width": 10.2rem, "background": blue),
+    "button": ("authorized-width": 3rem, "unauthorized-width": 0, "background": rgba(0, 200, 255, 0.361)),
+);
+
 :host ::ng-deep {
     .articles-table {
         &:not(.authorized) {
@@ -48,5 +20,21 @@
                 display: none;
             }
         }
+        @each $name, $map in $styles {
+            $authorized-width: map-get($map, "authorized-width");
+            $unauthorized-width: map-get($map, "unauthorized-width");
+            $background: map-get($map, "background");
+            .article-#{$name}-cell {
+                min-width: $unauthorized-width;
+                max-width: $unauthorized-width;
+            }
+            &.authorized .article-#{$name}-cell {
+                min-width: $authorized-width;
+                max-width: $authorized-width;
+            }
+            // .article-#{$name}-cell {
+            //     background: $background;
+            // }
+        }        
     }
 }

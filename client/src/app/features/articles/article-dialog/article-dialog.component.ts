@@ -5,15 +5,16 @@ import { UtilsService } from '@shared/services/utils.service';
 import { Store } from '@ngrx/store';
 import { ArticleActions } from '@actions/article.actions';
 import { getArticleTypes, getArticles, getAuthors, getCategories, getSources, getTags } from '@selectors/features.selectors';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TabViewModule } from 'primeng/tabview';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
-import { IAddArticle, IArticle, IArticleType, IAuthor, ICategory, ISource } from '@shared/interfaces/features.interfaces';
+import { ISubmitArticle, IArticle, IArticleType, IAuthor, ICategory, ISource } from '@shared/interfaces/features.interfaces';
 import { firstValueFrom } from 'rxjs';
+import dayjs from 'dayjs';
 
 @Component({
     selector: 'app-article-dialog',
@@ -29,12 +30,14 @@ export class ArticleDialogComponent implements OnInit {
     private _store$ = inject(Store);
     private _utilsService = inject(UtilsService);
     private _dynamicDialogRef = inject(DynamicDialogRef);
+    private _dynamicDialogConfig = inject(DynamicDialogConfig);
     private _articles!: IArticle[];
     public authors!: IAuthor[];
     public categories!: ICategory[];
     public articleTypes!: IArticleType[];
     public sources!: ISource[];
     public tags!: string[];
+    private _articleId = this._dynamicDialogConfig.data?.id;
     public formGroup = new FormGroup({
         authorId: new FormControl('', [this.articleAuthorIdValidator().bind(this)]),
         categoryId: new FormControl('', [this.articleCategoryIdValidator().bind(this)]),
@@ -42,6 +45,7 @@ export class ArticleDialogComponent implements OnInit {
         sourceId: new FormControl('', this.articleSourceIdValidator().bind(this)),
         date: new FormControl('', [Validators.required]),
         edition: new FormControl(''),
+        subject: new FormControl(''),
         featured: new FormControl(''),
         link: new FormControl('', [Validators.required, this.articleLinkValidator().bind(this)]),
         title: new FormControl('', [Validators.required, this.articleTitleValidator().bind(this)]),
@@ -62,21 +66,58 @@ export class ArticleDialogComponent implements OnInit {
         authorId: true,
     };
     public inproccess = false;
+    get formDisabled() {
+        let changed = false;
+        if (this._dynamicDialogConfig.data) {
+            changed = (
+                this.formGroup.value.authorId === this._dynamicDialogConfig.data.authorId &&
+                this.formGroup.value.categoryId === this._dynamicDialogConfig.data.categoryId &&
+                this.formGroup.value.articleTypeId === this._dynamicDialogConfig.data.articleTypeId &&
+                this.formGroup.value.sourceId === this._dynamicDialogConfig.data.sourceId &&
+                dayjs(this.formGroup.value.date).format() === dayjs(this._dynamicDialogConfig.data.date).format() &&
+                dayjs(this.formGroup.value.edition).format() === dayjs(this._dynamicDialogConfig.data.edition).format() &&
+                this.formGroup.value.subject === this._dynamicDialogConfig.data.subject &&
+                this.formGroup.value.featured === this._dynamicDialogConfig.data.featured &&
+                JSON.stringify((this.formGroup.value.tags ?? []).sort()) === JSON.stringify((this._dynamicDialogConfig.data.tags.sort() ?? [])) &&
+                this.formGroup.value.title === this._dynamicDialogConfig.data.title &&
+                this.formGroup.value.link === this._dynamicDialogConfig.data.link
+            );
+        }
+        return this.formGroup.invalid || this.inproccess || changed;
+    }
     onSubmit() {
         this.inproccess = true;
-        this._store$.dispatch(ArticleActions.addArticle({
-            article: this.formGroup.value as IAddArticle,
-            callback: (error: any) => {
-                if (error) {
-                    console.log();
-                    console.log(error);
-                    console.log(error.message);
-                } else {
-                    this._dynamicDialogRef.close();
+        if (this._articleId) {
+            this._store$.dispatch(ArticleActions.updateArticle({
+                articleId: this._articleId,
+                article: this.formGroup.value as ISubmitArticle,
+                callback: (error: any) => {
+                    if (error) {
+                        console.log();
+                        console.log(error);
+                        console.log(error.message);
+                    } else {
+                        this._dynamicDialogRef.close();
+                    }
+                    this.inproccess = false;
                 }
-                this.inproccess = false;
-            }
-        }));
+            }));
+
+        } else {
+            this._store$.dispatch(ArticleActions.addArticle({
+                article: this.formGroup.value as ISubmitArticle,
+                callback: (error: any) => {
+                    if (error) {
+                        console.log();
+                        console.log(error);
+                        console.log(error.message);
+                    } else {
+                        this._dynamicDialogRef.close();
+                    }
+                    this.inproccess = false;
+                }
+            }));
+        }
     }
     onCancel() {
         this._dynamicDialogRef.close();
@@ -146,7 +187,7 @@ export class ArticleDialogComponent implements OnInit {
             if (!this.formGroup) {
                 return  null;
             }
-            if ((this._articles ?? []).find(({ title }) => title === control.value)) {
+            if ((this._articles ?? []).find(({ title, id }) => title === control.value && (!!this._articleId ? id !== `${this._articleId}` : true))) {
                 return { duplicate_title: true }
             }
             return null;
@@ -157,7 +198,7 @@ export class ArticleDialogComponent implements OnInit {
             if (!this.formGroup) {
                 return  null;
             }
-            if ((this._articles ?? []).find(({ link }) => link === control.value)) {
+            if ((this._articles ?? []).find(({ link, id }) => link === control.value && (!!this._articleId ? id !== `${this._articleId}` : true))) {
                 return { duplicate_link: true }
             }
             return null;
@@ -272,17 +313,22 @@ export class ArticleDialogComponent implements OnInit {
         this.articleTypes = await firstValueFrom(this._store$.select(getArticleTypes));
         this.sources = await firstValueFrom(this._store$.select(getSources));
         this.tags = await firstValueFrom(this._store$.select(getTags));
+        if (this._dynamicDialogConfig.data) {
+            this.formGroup.get('authorId')?.setValue(this._dynamicDialogConfig.data.authorId);
+            this.formGroup.get('categoryId')?.setValue(this._dynamicDialogConfig.data.categoryId);
+            this.formGroup.get('articleTypeId')?.setValue(this._dynamicDialogConfig.data.articleTypeId);
+            this.formGroup.get('sourceId')?.setValue(this._dynamicDialogConfig.data.sourceId);
+            if (this._dynamicDialogConfig.data.date) {
+                this.formGroup.get('date')?.setValue(new Date(this._dynamicDialogConfig.data.date) as any);
+            }
+            if (this._dynamicDialogConfig.data.edition) {
+                this.formGroup.get('edition')?.setValue(new Date(this._dynamicDialogConfig.data.edition) as any);
+            }
+            this.formGroup.get('subject')?.setValue(this._dynamicDialogConfig.data.subject);
+            this.formGroup.get('featured')?.setValue(this._dynamicDialogConfig.data.featured);
+            this.formGroup.get('link')?.setValue(this._dynamicDialogConfig.data.link);
+            this.formGroup.get('title')?.setValue(this._dynamicDialogConfig.data.title);
+            this.formGroup.get('tags')?.setValue(this._dynamicDialogConfig.data.tags);
+        }
     }
-    // constructor() {
-    //     const mock = {"authorId":"c5c8-a84c5-c00bc","categoryId":"d599-ca08b-20a4b","articleTypeId":"2698-aafc9-0c72c","sourceId":"da1b-s9651-0676b","date":"10-Jan-2001","edition":"","featured":"Подкасты","link":"https://www.youtube.com/watch?v=xwqLBNzAZ8k","title":"ВОЙНА В ИЗРАИЛЕ день 83: подлый удар с Севера, битва с Ираном","tags":["test1","test11","Война с Ордой","Сергей Ауслендер"],"addeds":{"articleTypeName":"","categoryName":"","sourceName":"","authorName":"","authorLink":""}};
-    //     setTimeout(() => {
-    //         // this.fieldModes = {
-    //         //     articleTypeId: false,
-    //         //     categoryId: false,
-    //         //     sourceId: false,
-    //         //     authorId: false,
-    //         // }
-    //         this.formGroup.patchValue(mock);
-    //     }, 240);
-    // }
 }

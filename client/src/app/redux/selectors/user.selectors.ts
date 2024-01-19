@@ -12,13 +12,7 @@ export const getToken = createSelector(
 );
 export const getInterceptorHeaders = createSelector(getToken, (token) => {
     const date = new Date();
-    console.log(date.valueOf());
-    // console.log(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
     const utc = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
-    console.log(new Date(utc).valueOf());
-    console.log();
-    console.log();
-    console.log();
     return {
         Authorization: token,
         Simple: token ? '' : 'true',

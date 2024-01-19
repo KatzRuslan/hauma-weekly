@@ -2,10 +2,10 @@ import { Component, ElementRef, HostListener, OnDestroy, ViewChild, effect, inje
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { AppActions } from '@actions/app.actions';
 import { ArticleActions } from '@actions/article.actions';
 import { getUserFullname } from '@selectors/user.selectors';
 import { getArticleTypes, getArticlesTable, getAuthors, getCategories, getSources } from '@selectors/features.selectors';
-import { UtilsService } from '@shared/services/utils.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
@@ -18,11 +18,7 @@ import { Subscription, delay, from, map } from 'rxjs';
 import { ITableArticle, IArticleSignal } from '@shared/interfaces/features.interfaces';
 import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { ArticleDialogComponent } from './article-dialog/article-dialog.component';
-import { EditableTextComponent } from '@shared/components/editable-text/editable-text.component';
-import { EditableCalendarComponent } from '@shared/components/editable-calendar/editable-calendar.component';
-import { EditableDropdownComponent } from '@shared/components/editable-dropdown/editable-dropdown.component';
 import dayjs from 'dayjs';
-import { AppActions } from '@actions/app.actions';
 
 @Component({
     selector: 'app-articles',
@@ -31,7 +27,7 @@ import { AppActions } from '@actions/app.actions';
         CommonModule, FormsModule,
         InputTextModule, CalendarModule, ButtonModule, TooltipModule,
         TableModule, ListboxModule, OverlayPanelModule, DynamicDialogModule,
-        TooltipDirective, EditableTextComponent, EditableCalendarComponent, EditableDropdownComponent
+        TooltipDirective
     ],
     providers: [DialogService],
     templateUrl: './articles.component.html',
@@ -60,7 +56,6 @@ export class ArticlesComponent implements OnDestroy {
     });
     private _articleEffect = effect(() => this.createTableValue(this._articleSignal()));
     private _store$ = inject(Store);
-    private _utilsService = inject(UtilsService);
     private _elementRef = inject(ElementRef);
     private _dialogService = inject(DialogService);
     private _dynamicDialogRef: DynamicDialogRef | undefined;
@@ -77,8 +72,8 @@ export class ArticlesComponent implements OnDestroy {
         })
     ];
     public messageType = {
-        OpenAricleDialog: 'open article dialog',
-        UpdateArticle: 'update article',
+        OpenAddAricleDialog: 'open article add dialog',
+        OpenEditAricleDialog: 'open article edit dialog',
         RemoveArticle: 'remove article',
         ChangeEditableMode: 'change editable mode'
     };
@@ -148,8 +143,11 @@ export class ArticlesComponent implements OnDestroy {
     }
     onMessage(type: string, article?: ITableArticle, update?: any) {
         switch (type) {
-            case this.messageType.OpenAricleDialog:
+            case this.messageType.OpenAddAricleDialog:
                 this._dialogService.open(ArticleDialogComponent, { header: 'Add Article'});
+                break;
+            case this.messageType.OpenEditAricleDialog:
+                this._dialogService.open(ArticleDialogComponent, { header: 'Edit Article', data: article });
                 break;
             case this.messageType.RemoveArticle:
                 this._store$.dispatch(AppActions.showConfirmDialog({
@@ -164,29 +162,6 @@ export class ArticlesComponent implements OnDestroy {
                     }
                 }));
                 break;
-            case this.messageType.UpdateArticle:
-                this._store$.dispatch(ArticleActions.updateArticle({
-                    articleId: `${article?.id}`,
-                    article: {
-                        ...article,
-                        ...update
-                    },
-                    callback: (error) => {
-                        if (error) {
-                            const { header, message } = error;
-                            this._store$.dispatch(AppActions.showConfirmDialog({
-                                header, message,
-                                accept: {
-                                    label: 'Close',
-                                    action: () => {}
-                                }
-                            }));
-                        } else {
-                            this.onMessage(this.messageType.ChangeEditableMode);
-                        }
-                    }
-                }));
-                break;
             case this.messageType.ChangeEditableMode:
                 this.editable = update;
                 break;
@@ -198,6 +173,6 @@ export class ArticlesComponent implements OnDestroy {
         this._subscriptions.forEach(subscription => subscription.unsubscribe());
     }
     // constructor() {
-    //     this.onMessage(this.messageType.OpenAricleDialog);
+    //     this.onMessage(this.messageType.OpenEditAricleDialog, {"articleTypeId":"f85b-aa3f6-0ce93","authorId":"bdf9-aa751-6301c","categoryId":"a87b-c8180-dcbaa","date":"09-Nov-23","edition":"11/16/2023","featured":"","link":"https://www.instagram.com/p/CzcAuxqPJHI/?igshid=b2c1aXo5dXU0cTZm","sourceId":"fe8a-s95ff-17b43","title":"US Congress: Investigate Media Apparently Aware of Hamas Oct. 7 Plans","tags":["test2"],"id":"1aaa-ar8be-3d30e","sortableDate":1699480800000,"sortableEdition":1700085600000,"authorName":"Jason Greenblatt","authorLink":"https://en.wikipedia.org/wiki/Jason_Greenblatt","categoryName":"Advocacy","articleTypeName":"Graphic","sourceName":"Instagram","subject":"Test"});
     // }
 }

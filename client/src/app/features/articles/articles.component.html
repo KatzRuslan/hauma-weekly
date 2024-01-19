@@ -34,13 +34,14 @@
                     styleClass="w-3rem h-3rem"
                     size="large"
                     [rounded]="true" [rounded]="true" [plain]="true"
-                    (onClick)="onMessage(messageType.OpenAricleDialog)">
+                    (onClick)="onMessage(messageType.OpenAddAricleDialog)">
                 </p-button>
             </div>
         </div>
     </ng-template>
     <ng-template pTemplate="header">
         <tr class="">
+            <th class="article-button-cell" *ngIf="authorized"></th>
             <th class="article-date-cell">
                 <div class="flex align-items-center">
                     <div class="">
@@ -184,6 +185,16 @@
                     </div>
                 </div>
             </th>
+            <th class="article-subject-cell">
+                <div class="flex align-items-center">
+                    <div class="">
+                        <span class="">Subject</span>
+                    </div>
+                    <div class="" pSortableColumn="subject">
+                        <p-sortIcon field="subject"></p-sortIcon>
+                    </div>
+                </div>
+            </th>
             <th class="article-edition-cell">
                 <div class="flex align-items-center">
                     <div class="">
@@ -229,22 +240,18 @@
                     </div>
                 </div>
             </th>
-            <th class="article-trash-cell" *ngIf="authorized"></th>
+            <th class="article-button-cell" *ngIf="authorized"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-article>
         <tr class="article-row relative">
-            <td class="article-date-cell">
-                <app-editable-calendar
-                    [value]="article.date"
-                    [mode]="editable?.id === article.id && editable?.type === 'date'"
-                    placeholder="Select Date"
+            <td class="article-button-cell" *ngIf="authorized">
+                <p-button
+                    icon="pi pi-pencil"
                     styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="datepicker-input table-input-text w-9rem"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { date: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'date' } : undefined)">
-                </app-editable-calendar>
+                    [rounded]="true" [text]="true" [plain]="true"
+                    (onClick)="onMessage(messageType.OpenEditAricleDialog, article)">
+                </p-button>
                 <div class="opacity-60 absolute left-0 right-0 bottom-0 mb-1 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis" *ngIf="article.tags.length && editable?.id !== article.id">
                     <i class="pi pi-tag text-xs"></i>
                     @for (tag of article.tags; track $index) {
@@ -252,104 +259,52 @@
                     }
                 </div>
             </td>
+            <td class="article-date-cell">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.date | date : 'dd-MMM-YYYY'}}</span>
+                </div>
+            </td>
             <td class="article-type-cell" *ngIf="authorized">
-                <app-editable-dropdown
-                    class="overflow-hidden max-w-full"
-                    [value]="article.articleTypeId"
-                    [displayValue]="article.articleTypeName"
-                    [options]="(articleTypes$ | async) || []"
-                    [mode]="editable?.id === article.id && editable?.type === 'articleTypeId'"
-                    placeholder="Select a Type"
-                    styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="table-input-text w-6rem"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { articleTypeId: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'articleTypeId' } : undefined)">
-                </app-editable-dropdown>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.articleTypeName}}</span>
+                </div>
             </td>
             <td class="article-featured-cell" *ngIf="authorized">
-                <app-editable-text
-                    [value]="article.featured"
-                    [mode]="editable?.id === article.id && editable?.type === 'featured'"
-                    styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="table-input-text w-12"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { featured: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'featured' } : undefined)">
-                </app-editable-text>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.featured}}</span>
+                </div>
             </td>
             <td class="article-category-cell">
-                <app-editable-dropdown
-                    class="overflow-hidden max-w-full"
-                    [value]="article.categoryId"
-                    [displayValue]="article.categoryName"
-                    [options]="(categories$ | async) || []"
-                    [mode]="editable?.id === article.id && editable?.type === 'categoryId'"
-                    placeholder="Select a Category"
-                    styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="table-input-text w-8rem"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { categoryId: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'categoryId' } : undefined)">
-                </app-editable-dropdown>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.categoryName}}</span>
+                </div>
             </td>
             <td class="article-source-cell" *ngIf="authorized">
-                <app-editable-dropdown
-                    class="overflow-hidden max-w-full"
-                    [value]="article.sourceId"
-                    [displayValue]="article.sourceName"
-                    [options]="(sources$ | async) || []"
-                    [mode]="editable?.id === article.id && editable?.type === 'sourceId'"
-                    placeholder="Select a Source"
-                    styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="table-input-text w-8rem"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { sourceId: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'sourceId' } : undefined)">
-                </app-editable-dropdown>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.sourceName}}</span>
+                </div>
             </td>
             <td class="article-author-cell">
-                <app-editable-dropdown
-                    class="overflow-hidden max-w-full"
-                    [value]="article.authorId"
-                    [link]="article.authorLink"
-                    [displayValue]="article.authorName"
-                    [options]="(authors$ | async) || []"
-                    [mode]="editable?.id === article.id && editable?.type === 'authorId'"
-                    placeholder="Select an Authorflex "
-                    styleClass="flex  overflow-hidden w-12"
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="overflow-hidden flex table-input-text"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { authorId: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'authorId' } : undefined)">
-                </app-editable-dropdown>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.authorName" tooltipPosition="top">
+                    <a [href]="article.authorLink" class="text-color no-underline hover:underline" target="_blank">{{article.authorName}}</a>
+                </div>
             </td>
             <td class="article-title-cell">
-                <app-editable-text
-                    class="overflow-hidden"
-                    [value]="article.title"
-                    [link]="article.link"
-                    [mode]="editable?.id === article.id && editable?.type === 'title'"
-                    styleClass="w-12"
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="table-input-text w-12"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { title: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'title' } : undefined)">
-                </app-editable-text>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.title" tooltipPosition="top">
+                    <a [href]="article.link" class="text-color no-underline hover:underline" target="_blank">{{article.title}}</a>
+                </div>
+            </td>
+            <td class="article-subject-cell">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.subject}}</span>
+                </div>
             </td>
             <td class="article-edition-cell">
-                <app-editable-calendar
-                    [value]="article.edition"
-                    [mode]="editable?.id === article.id && editable?.type === 'edition'"
-                    placeholder="Select Date"
-                    styleClass=""
-                    textStyleClass="white-space-nowrap overflow-hidden text-overflow-ellipsis p-inputtext table-input-text border-transparent"
-                    inputStyleClass="datepicker-input table-input-text w-9rem"
-                    (onValueChange)="onMessage(messageType.UpdateArticle, article, { edition: $event })"
-                    (onModeChange)="onMessage(messageType.ChangeEditableMode, undefined, $event ? { id: article.id, type: 'edition' } : undefined)">
-                </app-editable-calendar>
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.edition | date : 'dd-MMM-YYYY'}}</span>
+                </div>
             </td>
-            <td class="article-trash-cell" *ngIf="authorized">
+            <td class="article-button-cell" *ngIf="authorized">
                 <p-button
                     icon="pi pi-trash"
                     styleClass=""

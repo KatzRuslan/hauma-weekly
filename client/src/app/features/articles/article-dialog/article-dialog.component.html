@@ -39,6 +39,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="flex align-items-center mb-2">
+                            <div class="w-8rem">
+                                <span class="">Subject</span>
+                            </div>
+                            <div class="">
+                                <input
+                                    formControlName="subject"
+                                    type="text" pInputText
+                                    class="w-20rem"
+                                    placeholder="Subject">
+                            </div>
+                        </div>
                     </div>
                     <div class="w-32rem">
                         <div class="flex align-items-center mb-2">
@@ -351,7 +363,7 @@
                 <p-button
                     label="Submit"
                     icon="pi pi-check" 
-                    [disabled]="formGroup.invalid || inproccess"
+                    [disabled]="formDisabled"
                     [rounded]="true" [outlined]="true"
                     (click)="onSubmit()">
                 </p-button>

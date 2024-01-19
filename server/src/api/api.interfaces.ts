@@ -14,7 +14,7 @@ export interface IArticle {
     title: string;
     tags: string[];
 }
-export interface IAddArticle extends IArticle {
+export interface ISubmitArticle extends IArticle {
     addeds: {
         articleTypeName: string;
         categoryName: string;

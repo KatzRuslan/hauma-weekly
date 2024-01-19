@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { IArticle, IAuthor, ICategory, IArticleType, ISource, IAddArticle } from '@shared/interfaces/features.interfaces';
+import { IArticle, IAuthor, ICategory, IArticleType, ISource, ISubmitArticle } from '@shared/interfaces/features.interfaces';
 
 export const ArticleActions = createActionGroup({
     source: 'Article',
@@ -22,9 +22,9 @@ export const ArticleActions = createActionGroup({
         //
         'Get Articles': emptyProps(),
         'Get Articles Success': props<{ articles: IArticle[]}>(),
-        'Add Article': props<{ article: IAddArticle, callback: (error?: any) => void }>(),
+        'Add Article': props<{ article: ISubmitArticle, callback: (error?: any) => void }>(),
         'Add Article Success': props<{ article: IArticle }>(),
-        'Update Article': props<{ articleId: string; article: IArticle, callback: (error?: any) => void }>(),
+        'Update Article': props<{ articleId: string; article: ISubmitArticle, callback: (error?: any) => void }>(),
         'Update Article Success': props<{ articleId: string; article: IArticle }>(),
         'Remove Article': props<{ articleId: string }>(),
         'Remove Article Success': props<{ articleId: string }>(),

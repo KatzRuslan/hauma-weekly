@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { IArticle, IAuthor, ICategory, IArticleType, ISource, IAddArticle } from '@shared/interfaces/features.interfaces';
+import { IArticle, IAuthor, ICategory, IArticleType, ISource, ISubmitArticle } from '@shared/interfaces/features.interfaces';
 
 @Injectable({
     providedIn: 'root'
@@ -40,11 +40,11 @@ export class ArticleService {
     getArticles() {
         return this._httpClient.get<IArticle[]>('api/articles', { headers: { Source: 'articles' } });
     }
-    addArticle(article: IAddArticle) {
+    addArticle(article: ISubmitArticle) {
         return this._httpClient.post<{ article: IArticle, updates: string[] }>('api/articles', { article }, { headers: { Source: 'articles' } });
     }
-    updateArticle(id: string, article: IArticle) {
-        return this._httpClient.put(`api/articles/${id}`, { article }, { headers: { Source: 'articles' } });
+    updateArticle(id: string, article: ISubmitArticle) {
+        return this._httpClient.put<{ article: IArticle, updates: string[] }>(`api/articles/${id}`, { article }, { headers: { Source: 'articles' } });
     }
     removeArticle(id: string) {
         return this._httpClient.delete(`api/articles/${id}`, { headers: { Source: 'articles' } });
