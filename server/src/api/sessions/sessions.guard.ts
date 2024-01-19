@@ -21,14 +21,8 @@ export class SessionsGuard implements CanActivate {
             if (verify) {
                 return true;
             }
-        } else {
-            const isSimpleGet = `${request.method}`.toLowerCase() === 'get' && `${request.headers.simple}` === 'true';
-            const simpleDate = parseInt(`${request.headers.simpledate ?? '0'}`);
-            const date = new Date();
-            const currentDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
-            if (isSimpleGet && simpleDate <= currentDate && currentDate - simpleDate < 1 * 60 * 1000) {
-                return true;
-            }
+        } else if (`${request.headers.simple}` === 'true') {
+            return true;
         }
         throw new UnauthorizedException();
     }
