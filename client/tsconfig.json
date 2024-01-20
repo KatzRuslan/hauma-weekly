@@ -30,7 +30,8 @@
       "@effects/*": ["./src/app/redux/effects/*"],
       "@reducers/*": ["./src/app/redux/reducers/*"],
       "@selectors/*": ["./src/app/redux/selectors/*"],
-      "@redux/*": ["./src/app/redux/*"]
+      "@redux/*": ["./src/app/redux/*"],
+      "exceljs": ["./node_modules/exceljs/dist/exceljs.min"]
     },
     "lib": [
       "ES2022",
