@@ -16,5 +16,15 @@ export const routes: Routes = [
         loadComponent: () => import('./types/types.component').then(c => c.TypesComponent),
         title: 'Settings Types'
     },
+    {
+        path: 'sources',
+        loadComponent: () => import('./sources/sources.component').then(c => c.SourcesComponent),
+        title: 'Settings Sources'
+    },
+    {
+        path: 'excel-uploader',
+        loadComponent: () => import('./excel-uploader/excel-uploader.component').then(c => c.ExcelUploaderComponent),
+        title: 'Import Data from Excel'
+    },
     { path: '', pathMatch: 'full', redirectTo: 'authors' }
 ];

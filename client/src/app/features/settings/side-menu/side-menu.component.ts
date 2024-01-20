@@ -20,8 +20,16 @@ export class SideMenuComponent {
             routerLink: ['categories']
         },
         {
+            name: 'Sources',
+            routerLink: ['sources']
+        },
+        {
             name: 'Types',
             routerLink: ['types']
+        },
+        {
+            name: 'Import Data from Excel',
+            routerLink: ['excel-uploader']
         }
     ];
 }

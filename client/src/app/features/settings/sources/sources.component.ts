@@ -3,26 +3,24 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AppActions } from '@actions/app.actions';
 import { ArticleActions } from '@actions/article.actions';
-import { getCategories } from '@selectors/features.selectors';
-import { UtilsService } from '@shared/services/utils.service';
+import { getSources } from '@selectors/features.selectors';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Table, TableModule } from 'primeng/table';
 import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, delay, from } from 'rxjs';
-import { ICategory } from '@shared/interfaces/features.interfaces';
-
+import { ISource } from '@shared/interfaces/features.interfaces';
 
 @Component({
-    selector: 'app-categories',
+    selector: 'app-sources',
     standalone: true,
     imports: [CommonModule, InputTextModule, ButtonModule, TableModule, DynamicDialogModule],
     providers: [DialogService],
-    templateUrl: './categories.component.html',
-    styleUrl: './categories.component.scss',
+    templateUrl: './sources.component.html',
+    styleUrl: './sources.component.scss',
     host: { class: 'flex flex-column overflow-hidden h-full settings-page' }
 })
-export class CategoriesComponent implements OnDestroy {
+export class SourcesComponent implements OnDestroy {
     @HostListener('window:resize', ['$event']) onWindowResize() {
         if (this._onResize && typeof this._onResize === 'function') {
             this._onResize();
@@ -30,23 +28,22 @@ export class CategoriesComponent implements OnDestroy {
     }
     @ViewChild('table') table!: Table;
     private _onResize!: any;
-    private _categoriesSignal = signal<{ categories: ICategory[]; searchText: string }>({
-        categories: [],
+    private _sourcesSignal = signal<{ sources: ISource[]; searchText: string }>({
+        sources: [],
         searchText: ''
     });
-    private _categoriesEffect = effect(() => this.createTableValue(this._categoriesSignal()));
+    private _sourcesEffect = effect(() => this.createTableValue(this._sourcesSignal()));
     private _store$ = inject(Store);
-    private _utilsService = inject(UtilsService);
     private _elementRef = inject(ElementRef);
     private _dialogService = inject(DialogService);
     private _dynamicDialogRef: DynamicDialogRef | undefined;
     private _subscriptions: Subscription[] = [
-        this._store$.select(getCategories).subscribe((categories) => this._categoriesSignal.update((data) => ({...data, categories})))
+        this._store$.select(getSources).subscribe((sources) => this._sourcesSignal.update((data) => ({...data, sources})))
     ];
     public messageType = {};
-    public tableValue: ICategory[] = [];
-    createTableValue({ categories, searchText }: { categories: ICategory[]; searchText: string }) {
-        this.tableValue = searchText.length === 0 ? categories : categories.filter(({name}) => `${name}`.toLowerCase().indexOf(searchText) >= 0);
+    public tableValue: ISource[] = [];
+    createTableValue({ sources, searchText }: { sources: ISource[]; searchText: string }) {
+        this.tableValue = searchText.length === 0 ? sources : sources.filter(({name}) => `${name}`.toLowerCase().indexOf(searchText) >= 0);
         if (!this._onResize) {
             this._onResize = () => {
                 const row = this._elementRef.nativeElement.querySelector('.row');
@@ -62,9 +59,9 @@ export class CategoriesComponent implements OnDestroy {
         }
     }
     onSearchFilter(searchText: string) {
-		this._categoriesSignal.update((data) => ({...data, searchText: `${searchText}`.toLowerCase()}));
+		this._sourcesSignal.update((data) => ({...data, searchText: `${searchText}`.toLowerCase()}));
 	}
-    onMessage(type: string, category?: ICategory) {
+    onMessage(type: string, source?: ISource) {
         switch (type) {
             default:
                 this._store$.dispatch(AppActions.showConfirmDialog({

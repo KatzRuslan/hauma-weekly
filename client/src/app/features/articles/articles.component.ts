@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, ViewChild, effect, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, ViewChild, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -77,7 +77,6 @@ export class ArticlesComponent implements OnDestroy {
         RemoveArticle: 'remove article',
         ChangeEditableMode: 'change editable mode'
     };
-    public editable?: { id: string; type: string };
     public tableValue: ITableArticle[] = [];
     createTableValue({ articles, searchText, selectedCategories, selectedSources, selectedArticleTypes, dateFrom, dateTo, issueDateFrom, issueDateTo, authorized }: IArticleSignal) {
         this.tableValue = articles.filter((article: ITableArticle) => {
@@ -141,7 +140,7 @@ export class ArticlesComponent implements OnDestroy {
     onArticleTypesFilter({ value }: { value: string[] }) {
         this._articleSignal.update((data: any) => ({ ...data, selectedArticleTypes: value }));
     }
-    onMessage(type: string, article?: ITableArticle, update?: any) {
+    onMessage(type: string, article?: ITableArticle) {
         switch (type) {
             case this.messageType.OpenAddAricleDialog:
                 this._dialogService.open(ArticleDialogComponent, { header: 'Add Article'});
@@ -161,9 +160,6 @@ export class ArticlesComponent implements OnDestroy {
                         action: () => {}
                     }
                 }));
-                break;
-            case this.messageType.ChangeEditableMode:
-                this.editable = update;
                 break;
             default:
                 break;
