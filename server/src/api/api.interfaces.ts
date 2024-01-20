@@ -14,6 +14,19 @@ export interface IArticle {
     title: string;
     tags: string[];
 }
+export interface IParsedArticle {
+    articleType: string;
+    author: string;
+    authorLink: string;
+    category: string;
+    date: string;
+    edition: string;
+    featured: string;
+    link: string;
+    source: string;
+    tags: string[];
+    title: string;
+}
 export interface ISubmitArticle extends IArticle {
     addeds: {
         articleTypeName: string;

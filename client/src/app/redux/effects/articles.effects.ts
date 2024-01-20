@@ -73,6 +73,59 @@ export class ArticlesEffects {
             ))
         )
     ); 
+    addParsedArticles$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(ArticleActions.addParsedArticles),
+            mergeMap(({ articles, callback }) => this._articleService.addParsedArticles(articles).pipe(
+                map(({ articles, updates }) => {
+                    const forkObj = updates.map((key) => {
+                        let observe;
+                        switch (key) {
+                            case 'author':
+                                observe = this._articleService.getAuthors().pipe(
+                                    tap((authors) => this._store$.dispatch(ArticleActions.getAuthorsSuccess({ authors })))
+                                );
+                                break;
+                            case 'articleType':
+                                observe = this._articleService.getArticleTypes().pipe(
+                                    tap((articleTypes) => this._store$.dispatch(ArticleActions.getArticleTypesSuccess({ articleTypes })))
+                                );
+                                break;                        
+                            case 'source':
+                                observe = this._articleService.getSources().pipe(
+                                    tap((sources) => this._store$.dispatch(ArticleActions.getSourcesSuccess({ sources })))
+                                );
+                                break;                        
+                            case 'category':
+                                observe = this._articleService.getCategories().pipe(
+                                    tap((categories) => this._store$.dispatch(ArticleActions.getCategoriesSuccess({ categories })))
+                                );
+                                break;                        
+                            case 'tag':
+                                observe = this._articleService.getTags().pipe(
+                                    tap((tags) => this._store$.dispatch(ArticleActions.getTagsSuccess({ tags })))
+                                );
+                                break;                        
+                            default:
+                                return {};
+                        }
+                        return { [key]: observe };
+                    }).reduce((total, current) => ({...total, ...current}), {});
+                    return { articles, forkObj };
+                }),
+                switchMap(({ articles, forkObj }) => (Object.keys(forkObj).length ? forkJoin(forkObj) : of({})).pipe(
+                    map(() => {
+                        callback();
+                        return ArticleActions.addParsedArticlesSuccess({ articles });
+                    })
+                )),
+                catchError((error) => {
+                    callback(error);
+                    return of(ArticleActions.emptyArticleEvent())
+                })
+            ))
+        )
+    ); 
     updateArticle$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.updateArticle),

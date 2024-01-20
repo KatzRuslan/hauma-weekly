@@ -37,7 +37,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-article let-rowIndex="rowIndex">
-        <tr class="" [class.surface-100]="rowIndex%2==0">
+        <tr class="row" [class.surface-100]="rowIndex%2==0">
             <td class="article-date-cell">
                 <app-editable-calendar
                     [value]="article.date"

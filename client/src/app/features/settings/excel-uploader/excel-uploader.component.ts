@@ -72,11 +72,6 @@ export class ExcelUploaderComponent {
                                         value = '';
                                     }
                                 }
-                                if (key === 'date') {
-                                    value = dayjs(`${value}`).format('DD-MMM-YYYY');
-                                } else if (key === 'edition') {
-                                    value = '';
-                                }
                                 rowData[key] = value;
                             }
                         });
@@ -84,10 +79,15 @@ export class ExcelUploaderComponent {
                     }
                 });
             }
-            this.tableValue = articles;
+            this.tableValue = articles.map((article) => ({
+                ...article,
+                tags: article.tags ? (article.tags ?? '').split(',').map((tag: string) => tag.trim()) : []
+            }));
+            // console.log(this.tableValue);
+            // console.log(JSON.stringify([this.tableValue[0],this.tableValue[10],this.tableValue[20],this.tableValue[30],]));
             if (!this._onResize) {
                 this._onResize = () => {
-                    const row = this._elementRef.nativeElement.querySelector('.article-row');
+                    const row = this._elementRef.nativeElement.querySelector('.row');
                     if (row) {
                         const { height } = row.getBoundingClientRect();
                         this.table.virtualScrollItemSize = height;
@@ -130,10 +130,26 @@ export class ExcelUploaderComponent {
                 {
                     console.log(this.tableValue);
                     this._inproccess = true;
+                    this._store$.dispatch(ArticleActions.addParsedArticles({
+                        articles: this.tableValue,
+                        callback: (error) => {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                this.tableValue = [];
+                            }
+                            this._inproccess = false;
+                        }
+                    }));
+                    // addParsedArticles
                 }
                 break;
             default:
                 break;
         }
+    }
+    constructor() {
+        this.tableValue = [{"date":"16-Jan-2024","articleType":"Post","featured":"Post","category":"100 Days","source":"X","author":"JLI","authorLink":"https://twitter.com/myJLI","title":"Wounded IDF Solidier Who Lost Leg Only Wishes for National Unity","link":"https://twitter.com/myJLI/status/1747281355635912717","edition":"","tags":["test4"]},{"date":"15-Jan-2023","articleType":"Video","category":"100 Days","source":"Instagram","author":"talesofisrael","authorLink":"https://www.instagram.com/talesofisrael/","title":"Tel Aviv Rally for Hostages 100 Days After 10/7","link":"https://www.instagram.com/reel/C2FfERnoPTZ/?igsh=MThmMGV6NWRzcm14dg%3D%3D","edition":"","tags":["test23"]},{"date":"13-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"BevL","authorLink":"https://twitter.com/bevthrills","title":"SA's Hypocricy Removing Capitaincy From Jewish Cricketeer for \"Security\" (1/2)","link":"https://twitter.com/bevthrills/status/1746083078806634845?t=fXXkrCKKV95fcsu7IGUAnw&s=08","edition":"","tags":["test2"]},{"date":"17-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"StopAntisemitism","authorLink":"https://twitter.com/StopAntisemites","title":"IRS Complaint Filed Against Hamas-Supporting \"The People's Forum\"","link":"https://twitter.com/StopAntisemites/status/1747704695349510155?s=20","edition":"","tags":["test1"]}];
+        console.log(this.tableValue[0]);
     }
 }

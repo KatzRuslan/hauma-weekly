@@ -29,6 +29,19 @@ export interface ISubmitArticle extends IArticle {
         authorLink: string;
     };
 }
+export interface IParsedArticle {
+    articleType: string;
+    author: string;
+    authorLink: string;
+    category: string;
+    date: string;
+    edition: string;
+    featured: string;
+    link: string;
+    source: string;
+    tags: string[];
+    title: string;
+}
 export interface IAuthor {
     id?: string;
     name: string;
