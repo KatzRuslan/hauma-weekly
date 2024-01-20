@@ -14,6 +14,7 @@
                 </div>
             </div>
         </ng-template>
+        <!--  
         <ng-template pTemplate="summary">
             <div class="flex justify-content-end">
                 <div class="px-2">
@@ -23,35 +24,20 @@
                         size="large"
                         [rounded]="true" [rounded]="true" [plain]="true">
                     </p-button>
-                    <!--  
-                        (onClick)="onMessage(messageType.AddUserDialog)"
-                    -->
                 </div>
             </div>
         </ng-template>
+        -->
         <ng-template pTemplate="header">
             <tr>
-                <th class="text-cell"><div class=""><span class="">Author Name</span></div></th>
-                <th class="text-cell"><div class=""><span class="">Author Link</span></div></th>
-                <th class="icon-cell"><div class=""><span class=""></span></div></th>
+                <th class="w-4"><div class=""><span class="">Author Name</span></div></th>
+                <th class=""><div class=""><span class="">Author Link</span></div></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-author>
             <tr class="author-row">
                 <td class="w-4"><div class=""><span class="">{{author.name}}</span></div></td>
                 <td class=""><div class=""><span class="">{{author.link}}</span></div></td>
-                <td class="w-3rem">
-                    <p-button
-                        icon="pi pi-trash"
-                        styleClass=""
-                        [rounded]="true" [text]="true" [plain]="true"
-                        [disabled]="authors.length<=1">
-                    </p-button>
-                    <!--  
-                        
-                        (click)="onMessage(messageType.RemoveUser, user)"
-                    -->
-                </td>
             </tr>
         </ng-template>
     </p-table>

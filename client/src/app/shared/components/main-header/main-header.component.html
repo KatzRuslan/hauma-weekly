@@ -9,8 +9,6 @@
             <ng-container [ngTemplateOutlet]="Authorized" [ngTemplateOutletContext]="{ fullName }"></ng-container>
         </ng-container>
     </div>
-    <!-- Шломо Бунимович -->
-    <!-- pi-sign-in -->
 </header>
 <ng-template #Authorized let-fullName="fullName">
     <div class=""><span class="">{{fullName}}</span></div>
@@ -23,7 +21,7 @@
             (onClick)="signOut()">
         </p-button>
     </div>
-    <div class="" *ngIf="0">
+    <div class="" *ngIf="1">
         <a [routerLink]="['/settings']" class="">
             <p-button
                 icon="pi pi-cog"
