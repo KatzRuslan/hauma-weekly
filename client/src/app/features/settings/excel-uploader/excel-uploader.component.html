@@ -1,1 +1,156 @@
-<input #inputFile type="file" accept=".xls,.xlsx" (change)="fileLoad(inputFile.files)" />
+<p-table #table
+    class="articles-table w-full h-full"
+    [value]="tableValue"
+    [scrollable]="true" scrollHeight="flex"
+    [virtualScroll]="true" [virtualScrollItemSize]="0">
+    <ng-template pTemplate="caption">
+        <div class="flex justify-content-end">
+            <label
+                pripple=""
+                class="p-ripple p-element w-3rem h-3rem p-button p-component p-button-icon-only p-button-rounded p-button-lg p-button-plain"
+                type="button">
+                <span class="pi pi-file-excel text-xl p-button-icon ng-star-inserted"></span>
+                <input #inputFile type="file" accept=".xls,.xlsx" (change)="fileLoad(inputFile.files)" class="overflow-hidden max-w-0 max-h-0"/>
+            </label>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex justify-content-end">
+            <p-button
+                icon="pi pi-upload text-xl"
+                styleClass="w-3rem h-3rem"
+                size="large"
+                [disabled]="isDisabled"
+                [rounded]="true" [rounded]="true" [plain]="true"  
+                (onClick)="onMessage(messageType.UploadArticles)">
+            </p-button>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr class="">
+            <th class="article-date-cell"><div class="px-2"><span class="">Date / Issue Date</span></div></th>
+            <th class="article-type-featured-cell"><div class="px-2"><span class="">Type / Featured</span></div></th>
+            <th class="article-category-source-cell"><div class="px-2"><span class="">Category / Source</span></div></th>
+            <th class="article-author-cell"><div class="px-2"><span class="">Author / Autor Link</span></div></th>
+            <th class="article-title-cell"><div class="px-2"><span class="">Title / Post Link</span></div></th>
+            <th class="article-subject-cell"><div class="px-2"><span class="">Subject</span></div></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-article let-rowIndex="rowIndex">
+        <tr class="" [class.surface-100]="rowIndex%2==0">
+            <td class="article-date-cell">
+                <app-editable-calendar
+                    [value]="article.date"
+                    [mode]="editable?.index==rowIndex && editable?.type=='date'"
+                    textStyleClass="p-inputtext no-border"
+                    inputStyleClass="datepicker-input"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{date:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'date':'')">
+                </app-editable-calendar>
+            </td>
+            <td class="article-type-featured-cell">
+                <app-editable-text
+                    [value]="article.articleType"
+                    [mode]="editable?.index==rowIndex && editable?.type=='articleType'"
+                    textStyleClass="p-inputtext no-border max-w-full"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{articleType:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'articleType':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-category-source-cell">
+                <app-editable-text
+                    [value]="article.category"
+                    [mode]="editable?.index==rowIndex && editable?.type=='category'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{category:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'category':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-author-cell">
+                <app-editable-text
+                    [value]="article.author"
+                    [mode]="editable?.index==rowIndex && editable?.type=='author'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{author:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'author':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-title-cell">
+                <app-editable-text
+                    [value]="article.title"
+                    [mode]="editable?.index==rowIndex && editable?.type=='title'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{title:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'title':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-subject-cell">
+                <app-editable-text
+                    [value]="article.subject"
+                    [mode]="editable?.index==rowIndex && editable?.type=='subject'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{subject:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'subject':'')">
+                </app-editable-text>
+            </td>
+        </tr>
+        <tr class="" [class.surface-100]="rowIndex%2==0">
+            <td class="article-date-cell">
+                <app-editable-calendar
+                    [value]="article.edition"
+                    [mode]="editable?.index==rowIndex && editable?.type=='edition'"
+                    textStyleClass="p-inputtext no-border"
+                    inputStyleClass="datepicker-input"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{edition:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'edition':'')">
+                </app-editable-calendar>
+            </td>
+            <td class="article-type-featured-cell">
+                <app-editable-text
+                    [value]="article.featured"
+                    [mode]="editable?.index==rowIndex && editable?.type=='featured'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{featured:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'featured':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-category-source-cell">
+                <app-editable-text
+                    [value]="article.source"
+                    [mode]="editable?.index==rowIndex && editable?.type=='source'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{source:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'source':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-author-cell">
+                <app-editable-text
+                    [value]="article.authorLink"
+                    [mode]="editable?.index==rowIndex && editable?.type=='authorLink'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{authorLink:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'authorLink':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-title-cell">
+                <app-editable-text
+                    [value]="article.link"
+                    [mode]="editable?.index==rowIndex && editable?.type=='link'"
+                    textStyleClass="p-inputtext no-border max-w-12"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateArticle,rowIndex,{link:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,rowIndex,$event?'link':'')">
+                </app-editable-text>
+            </td>
+            <td class="article-subject-cell"></td>
+        </tr>
+    </ng-template>
+</p-table>

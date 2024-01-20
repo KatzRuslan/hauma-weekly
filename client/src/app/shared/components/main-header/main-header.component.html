@@ -33,13 +33,15 @@
     </div>
 </ng-template>
 <ng-template #NotAuthorized>
-    <div class="">
+    <div class="opacity-0">
         <p-button
             icon="pi pi-sign-in"
-            styleClass="text-sm w-2rem h-2rem"
-            pTooltip="Sign In" tooltipPosition="bottom"
+            styleClass="text-sm w-2rem h-2rem cursor-auto"
             [rounded]="true" [outlined]="true" [plain]="true"
             (onClick)="signIn()">
         </p-button>
+        <!--  
+            pTooltip="Sign In" tooltipPosition="bottom"
+        -->
     </div>
 </ng-template>

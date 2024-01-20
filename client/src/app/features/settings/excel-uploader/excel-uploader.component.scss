@@ -1,0 +1,46 @@
+@use "sass:map";
+
+$styles: (
+    "date": ("width": 12rem, "background": red),
+    "type-featured": ("width": 10rem, "background": orange),
+    "category-source": ("width": 10rem, "background": yellow),
+    "author": ("width": 12rem, "background": blue),
+    "title": ("width": 12rem, "background": green),
+    "subject": ("width": 10rem, "background": blueviolet),
+);
+
+:host ::ng-deep {
+    @each $name, $map in $styles {
+        $width: map-get($map, "width");
+        $background: map-get($map, "background");
+        .article-#{$name}-cell {
+            min-width: $width;
+            max-width: $width;
+        }
+        // .article-#{$name}-cell {
+        //     background: $background;
+        // }
+    }
+    .table-icon-button.p-button.p-button-icon-only.p-button-rounded {
+        width: 1.4rem;
+        height: 1.4rem;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .p-button-icon {
+            font-size: .5rem;
+        }
+    }
+    .p-inputtext {
+        background: transparent;
+        &.no-border {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .no-border {
+        border-color: transparent;
+    }
+}

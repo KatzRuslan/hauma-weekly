@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, ViewChild, inject, effect, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, OnDestroy, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -74,8 +74,7 @@ export class ArticlesComponent implements OnDestroy {
     public messageType = {
         OpenAddAricleDialog: 'open article add dialog',
         OpenEditAricleDialog: 'open article edit dialog',
-        RemoveArticle: 'remove article',
-        ChangeEditableMode: 'change editable mode'
+        RemoveArticle: 'remove article'
     };
     public tableValue: ITableArticle[] = [];
     createTableValue({ articles, searchText, selectedCategories, selectedSources, selectedArticleTypes, dateFrom, dateTo, issueDateFrom, issueDateTo, authorized }: IArticleSignal) {
