@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { join } from 'path';
 
-const databaseUrl = join(__dirname, '', 'assets/database.json');
+const databaseUrl = join(__dirname, '..', 'assets/database.json');
 
 @Injectable()
 export class AppService {

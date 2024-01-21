@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import databaseJson from '../src/assets/database.json';
+// import databaseJson from '../src/assets/database.json';
 import * as express from 'express';
 import { urlencoded, json } from 'express';
 

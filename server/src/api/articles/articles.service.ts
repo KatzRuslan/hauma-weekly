@@ -78,6 +78,8 @@ export class ArticlesService {
                 if (!updates.includes('author')) {
                     updates.push('author')
                 }
+                console.log(author);
+                
             }
         });
         const articles = Promise.all(promises);
