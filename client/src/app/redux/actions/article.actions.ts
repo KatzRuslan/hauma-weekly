@@ -25,7 +25,7 @@ export const ArticleActions = createActionGroup({
         'Add Article': props<{ article: ISubmitArticle, callback: (error?: any) => void }>(),
         'Add Article Success': props<{ article: IArticle }>(),
         'Add Parsed Articles': props<{ articles: IParsedArticle[], callback: (error?: any) => void }>(),
-        'Add Parsed Articles Success': props<{ articles: IArticle[] }>(),
+        'Add Parsed Articles Success': props<{ articles: IArticle[]; existed: IParsedArticle[] }>(),
         'Update Article': props<{ articleId: string; article: ISubmitArticle, callback: (error?: any) => void }>(),
         'Update Article Success': props<{ articleId: string; article: IArticle }>(),
         'Remove Article': props<{ articleId: string }>(),

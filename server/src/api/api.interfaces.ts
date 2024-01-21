@@ -10,6 +10,7 @@ export interface IArticle {
     date: string;
     edition: string;
     featured: string;
+    subject: string;
     link: string;
     title: string;
     tags: string[];
@@ -22,6 +23,7 @@ export interface IParsedArticle {
     date: string;
     edition: string;
     featured: string;
+    subject: string;
     link: string;
     source: string;
     tags: string[];

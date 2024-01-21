@@ -16,6 +16,7 @@ export const reducer = createReducer(
     initialState,
     on(ArticleActions.getArticlesSuccess, (state, { articles }) => ({ ...state, articles })),
     on(ArticleActions.addArticleSuccess, (state, { article }) => adapter.addOne(state, 'articles', article)),
+    on(ArticleActions.addParsedArticlesSuccess, (state, { articles }) => adapter.addMany(state, 'articles', articles)),
     on(ArticleActions.updateArticleSuccess, (state, { articleId, article }) => adapter.updateOne(state, 'articles', { id: articleId, changes: article })),
     on(ArticleActions.removeArticleSuccess, (state, { articleId }) => adapter.removeOne(state, 'articles', articleId)),
     //

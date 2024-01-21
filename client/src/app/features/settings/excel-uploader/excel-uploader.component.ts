@@ -1,7 +1,8 @@
-import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { ScannedActionsSubject, Store } from '@ngrx/store';
+import { ofType } from '@ngrx/effects';
 import { AppActions } from '@actions/app.actions';
 import { ArticleActions } from '@actions/article.actions';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +11,7 @@ import { EditableCalendarComponent } from '@shared/components/editable-calendar/
 import { EditableTextComponent } from '@shared/components/editable-text/editable-text.component';
 import  { Workbook } from 'exceljs';
 import dayjs from 'dayjs';
-import { delay, from } from 'rxjs';
+import { Subscription, delay, from } from 'rxjs';
 
 @Component({
     selector: 'app-excel-uploader',
@@ -24,7 +25,7 @@ import { delay, from } from 'rxjs';
     styleUrl: './excel-uploader.component.scss',
     host: { class: 'flex flex-column overflow-hidden h-full settings-page' }
 })
-export class ExcelUploaderComponent {
+export class ExcelUploaderComponent implements OnDestroy {
     @HostListener('window:resize', ['$event']) onWindowResize() {
         if (this._onResize && typeof this._onResize === 'function') {
             this._onResize();
@@ -33,6 +34,7 @@ export class ExcelUploaderComponent {
     @ViewChild('table') table!: Table;
     private _onResize!: any;
     private _store$ = inject(Store);
+    private _scannedActionsSubject$ = inject(ScannedActionsSubject);
     private _elementRef = inject(ElementRef);
     public tableValue: any[] = [];
     public editable?: { index?: number; type?: string } = {};
@@ -42,6 +44,9 @@ export class ExcelUploaderComponent {
         ChangeEditableMode: 'change editable mode'
     };
     private _inproccess = false;
+    private _subscriptions: Subscription[] = [
+        this._scannedActionsSubject$.pipe(ofType(ArticleActions.addParsedArticlesSuccess)).subscribe(({ existed }) => this.tableValue = existed)
+    ];
     get isDisabled() {
         return this.tableValue.length === 0 || this._inproccess;
     }
@@ -68,9 +73,9 @@ export class ExcelUploaderComponent {
                                 let value = cell.text;
                                 if (['date', 'edition'].includes(key)) {
                                     value = dayjs(`${value}`).format('DD-MMM-YYYY');
-                                    if (value === 'Invalid Date') {
-                                        value = '';
-                                    }
+                                    // if (value === 'Invalid Date') {
+                                    //     value = '';
+                                    // }
                                 }
                                 rowData[key] = value;
                             }
@@ -128,28 +133,29 @@ export class ExcelUploaderComponent {
                 break;
             case this.messageType.UploadArticles:
                 {
-                    console.log(this.tableValue);
                     this._inproccess = true;
                     this._store$.dispatch(ArticleActions.addParsedArticles({
                         articles: this.tableValue,
                         callback: (error) => {
                             if (error) {
-                                console.log(error);
-                            } else {
-                                this.tableValue = [];
+                                const { header, message } = error;
+                                this._store$.dispatch(AppActions.showConfirmDialog({ header, message, accept: { label: 'Close' }}));
                             }
                             this._inproccess = false;
                         }
                     }));
-                    // addParsedArticles
                 }
                 break;
             default:
                 break;
         }
     }
+    ngOnDestroy() {
+        this._subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
     constructor() {
-        this.tableValue = [{"date":"16-Jan-2024","articleType":"Post","featured":"Post","category":"100 Days","source":"X","author":"JLI","authorLink":"https://twitter.com/myJLI","title":"Wounded IDF Solidier Who Lost Leg Only Wishes for National Unity","link":"https://twitter.com/myJLI/status/1747281355635912717","edition":"","tags":["test4"]},{"date":"15-Jan-2023","articleType":"Video","category":"100 Days","source":"Instagram","author":"talesofisrael","authorLink":"https://www.instagram.com/talesofisrael/","title":"Tel Aviv Rally for Hostages 100 Days After 10/7","link":"https://www.instagram.com/reel/C2FfERnoPTZ/?igsh=MThmMGV6NWRzcm14dg%3D%3D","edition":"","tags":["test23"]},{"date":"13-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"BevL","authorLink":"https://twitter.com/bevthrills","title":"SA's Hypocricy Removing Capitaincy From Jewish Cricketeer for \"Security\" (1/2)","link":"https://twitter.com/bevthrills/status/1746083078806634845?t=fXXkrCKKV95fcsu7IGUAnw&s=08","edition":"","tags":["test2"]},{"date":"17-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"StopAntisemitism","authorLink":"https://twitter.com/StopAntisemites","title":"IRS Complaint Filed Against Hamas-Supporting \"The People's Forum\"","link":"https://twitter.com/StopAntisemites/status/1747704695349510155?s=20","edition":"","tags":["test1"]}];
+        this.tableValue = [{"date":"16-Jan-2024","articleType":"Post","featured":"Post","category":"100 Days","source":"X2","author":"JLI","authorLink":"https://twitter.com/myJLI","title":"Wounded IDF Solidier Who Lost Leg Only Wishes for National Unity","link":"https://twitter.com/myJLI/status/1747281355635912717","edition":"","tags":["test4", "existed"]},{"date":"15-Jan-2023","articleType":"Video2","category":"1002 Days","source":"Instagram2","author":"JLI","authorLink":"https://www.instagram.com/talesofisrael/","title":"Tel Aviv Rally for Hostages 100 Days After 10/7","link":"https://www.instagram.com/reel/C2FfERnoPTZ/?igsh=MThmMGV6NWRzcm14dg%3D%3D","edition":"","tags":["test23"]},{"date":"13-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"BevL","authorLink":"https://twitter.com/bevthrills","title":"SA's Hypocricy Removing Capitaincy From Jewish Cricketeer for \"Security\" (1/2)","link":"https://twitter.com/bevthrills/status/1746083078806634845?t=fXXkrCKKV95fcsu7IGUAnw&s=08","edition":"","tags":["test2"]},{"date":"17-Jan-2024","articleType":"Post","category":"Antisemitism/Antizionism","source":"X","author":"StopAntisemitism","authorLink":"https://twitter.com/StopAntisemites","title":"IRS Complaint Filed Against Hamas-Supporting \"The People's Forum\"","link":"https://twitter.com/StopAntisemites/status/1747704695349510155?s=20","edition":"","tags":["test1"]}];
+        this.tableValue = [...this.tableValue, this.tableValue[0]];
         console.log(this.tableValue[0]);
     }
 }

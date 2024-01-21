@@ -64,65 +64,66 @@ export class ArticlesService {
         return { article, updates };
     }
     async addParsedArticles(list: IParsedArticle[]) {
-        const updates = [];
-        const authors = await this._authorsService.getAuthors();
-        const articleTypes = await this._typesService.getTypes();
-        const categories = await this._categoriesService.getCategories();
-        const sources = await this._sourcesService.getSources();
-        const tags = await this._tagsService.getTags();
-        const promises = list.map(async (item) => {
-            const { domain, selector } = this._appService.parseLink(`${item.link}`);
-            if (!authors.find(({name}) => name === item.author)) {
-                const author = await this._authorsService.addAuthor({ name: item.author, link: item.authorLink });
-                authors.push(author);
-                if (!updates.includes('author')) {
-                    updates.push('author')
+        const articles = [];
+        const _updates = [];
+        const existed = [];
+        for await (const candidate of list) {
+            const _articles = await this.getArticles();
+            const authors = await this._authorsService.getAuthors();
+            const articleTypes = await this._typesService.getTypes();
+            const categories = await this._categoriesService.getCategories();
+            const sources = await this._sourcesService.getSources();
+            const tags = await this._tagsService.getTags();
+            const submit: ISubmitArticle = {
+                date: candidate.date && candidate.date !== 'Invalid Date' ? candidate.date : '',
+                edition: candidate.edition && candidate.edition !== 'Invalid Date' ? candidate.edition : '',
+                featured: candidate.featured ?? '',
+                subject: candidate.subject ?? '',
+                tags: candidate.tags,
+                addeds: {}
+            } as ISubmitArticle;
+            if (_articles.find(({title, link}) => candidate.title === title || candidate.link === link)) {
+                existed.push(candidate);
+            } else {
+                submit.title = candidate.title;
+                submit.link = candidate.link;
+                //
+                const author = authors.find(({name}) => name === candidate.author);
+                if (author) {
+                    submit.authorId = author.id;
+                } else {
+                    submit.addeds.authorName = candidate.author;
+                    submit.addeds.authorLink = candidate.authorLink;
                 }
-                console.log(author);
-                
+                const articleType = articleTypes.find(({name}) => name === candidate.articleType);
+                if (articleType) {
+                    submit.articleTypeId = articleType.id;
+                } else {
+                    submit.addeds.articleTypeName = candidate.articleType;
+                }
+                const category = categories.find(({name}) => name === candidate.category);
+                if (category) {
+                    submit.categoryId = category.id;
+                } else {
+                    submit.addeds.categoryName = candidate.category;
+                }
+                const source = sources.find(({name}) => name === candidate.source);
+                if (source) {
+                    submit.sourceId = source.id;
+                } else {
+                    submit.addeds.sourceName = candidate.source;
+                }
+                //
+                const { article, updates } = await this.addArticle(submit);
+                updates.forEach(node => {
+                    if (!_updates.includes(node)) {
+                        _updates.push(node);
+                    }
+                })
+                articles.push(article);               
             }
-        });
-        const articles = Promise.all(promises);
-        // const { domain, selector } = this._appService.parseLink(`${article.link}`);
-        // article.id = this._appService.generateUUID('XXXY-arYXX-XXXXX');
-        // if (!article.authorId && article.addeds.authorName && article.addeds.authorLink) {
-        //     updates.push('author');
-        //     const { id }: IAuthor = await this._authorsService.addAuthor({ name: article.addeds.authorName, link: article.addeds.authorLink });
-        //     article.authorId = id;
-        // }
-        // if (!article.articleTypeId && article.addeds.articleTypeName) {
-        //     updates.push('articleType');
-        //     const { id }: IArticleType = await this._typesService.addType({
-        //         name: article.addeds.articleTypeName,
-        //         selector: `${article.addeds.articleTypeName}`.toLowerCase(),
-        //         provides: [selector]
-        //     });
-        //     article.articleTypeId = id;
-        // }
-        // if (!article.sourceId && article.addeds.sourceName) {
-        //     updates.push('source');
-        //     const { id }: ISource = await this._sourcesService.addSource({
-        //         name: article.addeds.sourceName,
-        //         selector,
-        //         provide: domain
-        //     });
-        //     article.sourceId = id;
-        // }
-        // if (!article.categoryId && article.addeds.categoryName) {
-        //     updates.push('category');
-        //     const { id }: ICategory = await this._categoriesService.addCategory({
-        //         name: article.addeds.categoryName
-        //     });
-        //     article.categoryId = id;
-        // }
-        // const tags = await this._tagsService.addTags(article.tags);
-        // if (tags.length) {
-        //     updates.push('tag');
-        // }
-        // // //
-        // // delete article.addeds;
-        // await this._appService.post(article, 'articles');
-        return { articles, updates };
+        }
+        return { articles, updates: _updates, existed };
     }
     async updateArticle(id: string, article: ISubmitArticle) {
         const updates = [];

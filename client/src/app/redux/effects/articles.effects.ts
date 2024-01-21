@@ -77,7 +77,7 @@ export class ArticlesEffects {
         () => this._actions$.pipe(
             ofType(ArticleActions.addParsedArticles),
             mergeMap(({ articles, callback }) => this._articleService.addParsedArticles(articles).pipe(
-                map(({ articles, updates }) => {
+                map(({ articles, updates, existed }) => {
                     const forkObj = updates.map((key) => {
                         let observe;
                         switch (key) {
@@ -111,12 +111,16 @@ export class ArticlesEffects {
                         }
                         return { [key]: observe };
                     }).reduce((total, current) => ({...total, ...current}), {});
-                    return { articles, forkObj };
+                    return { articles, existed, forkObj };
                 }),
-                switchMap(({ articles, forkObj }) => (Object.keys(forkObj).length ? forkJoin(forkObj) : of({})).pipe(
+                switchMap(({ articles, existed, forkObj }) => (Object.keys(forkObj).length ? forkJoin(forkObj) : of({})).pipe(
                     map(() => {
-                        callback();
-                        return ArticleActions.addParsedArticlesSuccess({ articles });
+                        const error = existed.length === 0 ? undefined : {
+                            header: 'Warning',
+                            message: 'One or more articles already exist'
+                        };
+                        callback(error);
+                        return ArticleActions.addParsedArticlesSuccess({ articles, existed });
                     })
                 )),
                 catchError((error) => {

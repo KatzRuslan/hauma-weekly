@@ -44,7 +44,7 @@ export class ArticleService {
         return this._httpClient.post<{ article: IArticle, updates: string[] }>('api/articles', { article }, { headers: { Source: 'articles' } });
     }
     addParsedArticles(articles: IParsedArticle[]) {
-        return this._httpClient.post<{ articles: IArticle[], updates: string[] }>('api/articles/parsed', { articles }, { headers: { Source: 'parsed articles' } });
+        return this._httpClient.post<{ articles: IArticle[], updates: string[]; existed: IParsedArticle[] }>('api/articles/parsed', { articles }, { headers: { Source: 'parsed articles' } });
     }
     updateArticle(id: string, article: ISubmitArticle) {
         return this._httpClient.put<{ article: IArticle, updates: string[] }>(`api/articles/${id}`, { article }, { headers: { Source: 'articles' } });

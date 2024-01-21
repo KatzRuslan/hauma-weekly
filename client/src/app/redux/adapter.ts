@@ -16,6 +16,23 @@ export const adapter = {
             [key]: updated
         }
     },
+    addMany: <T>(state: any, key: string, items: any[]) => {
+        if (!state[key]) {
+            return { state };
+        }
+        let updated: any;
+        const data = state[key];
+        if (Array.isArray(data)) {
+            if (!(data && items && items.length)) {
+                return { ...state }
+            }
+            updated = [...data, ...items];
+        }
+        return {
+            ...state,
+            [key]: updated
+        }
+    },
     updateOne: <T>(state: any, key: string, update: { id?: string; changes: any }) => {
         if (!(key in state)) {
             return { state };
