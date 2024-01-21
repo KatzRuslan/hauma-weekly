@@ -32,7 +32,6 @@
         <tr>
             <th class="w-3rem"></th>
             <th class=""><div class=""><span class="">Type Name</span></div></th>
-            <th class="article-type-provides-cell"><div class=""><span class="">Provides</span></div></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-articleType>
@@ -46,11 +45,6 @@
                 </p-button>
             </td>
             <td class=""><div class=""><span class="">{{articleType.name}}</span></div></td>
-            <td class="article-type-provides-cell">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="articleType.displayProvides" tooltipPosition="top">
-                    <span class="">{{articleType.displayProvides}}</span>
-                </div>
-            </td>
         </tr>
     </ng-template>
 </p-table>

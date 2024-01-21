@@ -44,10 +44,7 @@ export class TypesComponent implements OnDestroy {
     private _subscriptions: Subscription[] = [
         this._store$.select(getArticleTypes).subscribe((articleTypes) => this._articleTypesSignal.update((data) => ({
             ...data,
-            articleTypes: articleTypes.map((articleType) => ({
-                ...articleType,
-                displayProvides: articleType.provides.filter((provide) => provide !== '<acting>').join(', ')
-            }))
+            articleTypes
         })))
     ];
     public messageType = {};
