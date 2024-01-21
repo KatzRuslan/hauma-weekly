@@ -33,8 +33,7 @@ export class ArticlesService {
             updates.push('articleType');
             const { id }: IArticleType = await this._typesService.addType({
                 name: article.addeds.articleTypeName,
-                selector: `${article.addeds.articleTypeName}`.toLowerCase(),
-                provides: [selector]
+                selector: `${article.addeds.articleTypeName}`.toLowerCase()
             });
             article.articleTypeId = id;
         }
@@ -138,8 +137,7 @@ export class ArticlesService {
             updates.push('articleType');
             const { id }: IArticleType = await this._typesService.addType({
                 name: article.addeds.articleTypeName,
-                selector: `${article.addeds.articleTypeName}`.toLowerCase(),
-                provides: [selector]
+                selector: `${article.addeds.articleTypeName}`.toLowerCase()
             });
             article.articleTypeId = id;
         }

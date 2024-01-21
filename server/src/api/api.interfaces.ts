@@ -51,7 +51,6 @@ export interface IArticleType {
     id?: string;
     name: string;
     selector: string;
-    provides: string[];
 }
 export interface ISource {
     id?: string;

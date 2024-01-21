@@ -15081,56 +15081,21 @@
 		{
 			"name": "Graphic",
 			"selector": "graphic",
-			"provides": [
-				"<acting>",
-				"<acting>",
-				"<acting>",
-				"instagram",
-				"x",
-				"twitter"
-			],
 			"id": "f85b-aa3f6-0ce93"
 		},
 		{
 			"name": "Post",
 			"selector": "post",
-			"provides": [
-				"instagram",
-				"wsj",
-				"browndailyherald",
-				"jpost",
-				"jewishjournal",
-				"youtube",
-				"apnews",
-				"nationalpost",
-				"honestreporting",
-				"edition",
-				"timesofisrael",
-				"foxnews",
-				"chabadharvard",
-				"armstronginstitute",
-				"unwatch",
-				"nournews",
-				"x",
-				"twitter"
-			],
 			"id": "9699-aa2ce-d904b"
 		},
 		{
 			"name": "Video",
 			"selector": "video",
-			"provides": [
-				"youtube",
-				"tiktok"
-			],
 			"id": "2698-aafc9-0c72c"
 		},
 		{
 			"name": "Podcast",
 			"selector": "podcast",
-			"provides": [
-				"nytimes"
-			],
 			"id": "528a-a8491-56cbe"
 		}
 	],

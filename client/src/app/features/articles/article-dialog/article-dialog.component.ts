@@ -6,12 +6,13 @@ import { Store } from '@ngrx/store';
 import { ArticleActions } from '@actions/article.actions';
 import { getArticleTypes, getArticles, getAuthors, getCategories, getSources, getTags } from '@selectors/features.selectors';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TabViewModule } from 'primeng/tabview';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { ISubmitArticle, IArticle, IArticleType, IAuthor, ICategory, ISource } from '@shared/interfaces/features.interfaces';
 import { firstValueFrom } from 'rxjs';
 import dayjs from 'dayjs';
@@ -20,8 +21,8 @@ import dayjs from 'dayjs';
     selector: 'app-article-dialog',
     standalone: true,
     imports: [
-        CommonModule, ReactiveFormsModule, FormsModule, 
-        TabViewModule, InputTextModule, DropdownModule, MultiSelectModule, CalendarModule, ButtonModule
+        CommonModule, ReactiveFormsModule, FormsModule, TooltipModule, TooltipDirective,
+        InputTextModule, DropdownModule, MultiSelectModule, CalendarModule, ButtonModule
     ],
     templateUrl: './article-dialog.component.html',
     styleUrl: './article-dialog.component.scss'
@@ -58,12 +59,12 @@ export class ArticleDialogComponent implements OnInit {
             authorLink: new FormControl('', [this.articleAuthorLinkValidator().bind(this)]),
         })
     });
-    public activeIndex = 0;
+    public authorLink?: string;
     public fieldModes = {
         articleTypeId: true,
         categoryId: true,
         sourceId: true,
-        authorId: true,
+        authorId: false,
     };
     public inproccess = false;
     get formDisabled() {
@@ -139,6 +140,10 @@ export class ArticleDialogComponent implements OnInit {
             this.formGroup.get('addeds')?.get('authorName')?.setValue(`${authorName}`);
         }
     }
+    getAuthorLink() {
+        const author = this.authors.find(({ id }) => id === this.formGroup.value.authorId);
+        this.authorLink = author?.link ?? '';
+    }
     changeFieldModes(mode: {[key:string]: boolean}) {
         this.fieldModes = { ...this.fieldModes, ...mode };
         const [{key, value}] = Object.entries(mode).map(([key, value]) => ({key, value}));
@@ -167,6 +172,7 @@ export class ArticleDialogComponent implements OnInit {
                 break;
             case (key === 'authorId' && !value):
                 this.formGroup.get('authorId')?.setValue('');
+                this.authorLink  = '';
                 break;
         
             default:
@@ -329,6 +335,10 @@ export class ArticleDialogComponent implements OnInit {
             this.formGroup.get('link')?.setValue(this._dynamicDialogConfig.data.link);
             this.formGroup.get('title')?.setValue(this._dynamicDialogConfig.data.title);
             this.formGroup.get('tags')?.setValue(this._dynamicDialogConfig.data.tags);
+            this.fieldModes.authorId  = true;
+            this.getAuthorLink();
+        } else {
+            this.formGroup.get('date')?.setValue(new Date() as any);
         }
     }
 }

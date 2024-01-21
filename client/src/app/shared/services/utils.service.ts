@@ -12,22 +12,9 @@ export class UtilsService {
         };
         const [origin] = `${link}`.toLowerCase().replace('://', '∇').split('/').map(str => str.replace('∇', '://'));
         const source = sources.find(({ provide }) => provide === origin);
-        if (source) {
-            parsed.sourceId = `${source.id}`;
-            const provides = articleTypes.map((articleType) => {
-                const index = articleType.provides.findIndex((provide) => provide === source.selector);
-                if (index < 0) {
-                    return undefined;
-                }
-                return {
-                    id: articleType.id,
-                    index
-                }
-            }).filter(node => !!node).sort((a, b) => (a?.index ?? 0) - (b?.index ?? 0));
-            if (provides[0]?.id) {
-                parsed.articleTypeId = provides[0].id
-            }
-        }
+        parsed.sourceId = `${source?.id ?? ''}`;
+        const articleTypeSelector = ['youtube', 'instagram'].includes(source?.selector ?? '') ? 'video' : 'post';
+        parsed.articleTypeId = articleTypes.find(({ selector }) => selector === articleTypeSelector)?.id ?? '';
         return parsed;
     }
     parseAuthorLink(link: string) {
