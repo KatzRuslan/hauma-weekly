@@ -74,7 +74,8 @@ export class ArticlesComponent implements OnDestroy {
     public messageType = {
         OpenAddAricleDialog: 'open article add dialog',
         OpenEditAricleDialog: 'open article edit dialog',
-        RemoveArticle: 'remove article'
+        RemoveArticle: 'remove article',
+        DownloadArticles: 'download articles'
     };
     public tableValue: ITableArticle[] = [];
     createTableValue({ articles, searchText, selectedCategories, selectedSources, selectedArticleTypes, dateFrom, dateTo, issueDateFrom, issueDateTo, authorized }: IArticleSignal) {
@@ -160,6 +161,9 @@ export class ArticlesComponent implements OnDestroy {
                     }
                 }));
                 break;
+            case this.messageType.DownloadArticles:
+                this._store$.dispatch(ArticleActions.downloadArticles());
+                break;
             default:
                 break;
         }
@@ -168,6 +172,7 @@ export class ArticlesComponent implements OnDestroy {
         this._subscriptions.forEach(subscription => subscription.unsubscribe());
     }
     // constructor() {
+    //     this.onMessage(this.messageType.DownloadArticles);
     //     this.onMessage(this.messageType.OpenEditAricleDialog, {"articleTypeId":"f85b-aa3f6-0ce93","authorId":"bdf9-aa751-6301c","categoryId":"a87b-c8180-dcbaa","date":"09-Nov-23","edition":"11/16/2023","featured":"","link":"https://www.instagram.com/p/CzcAuxqPJHI/?igshid=b2c1aXo5dXU0cTZm","sourceId":"fe8a-s95ff-17b43","title":"US Congress: Investigate Media Apparently Aware of Hamas Oct. 7 Plans","tags":[],"id":"1aaa-ar8be-3d30e","sortableDate":1699480800000,"sortableEdition":1700085600000,"authorName":"Jason Greenblatt","authorLink":"https://en.wikipedia.org/wiki/Jason_Greenblatt","categoryName":"Advocacy","articleTypeName":"Graphic","sourceName":"Instagram","subject":"Test",});
     // }
 }

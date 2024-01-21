@@ -2,14 +2,17 @@ import { Injectable, inject } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ArticleActions } from '@actions/article.actions';
+import { getArticlesTable } from '@selectors/features.selectors';
 import { ArticleService } from '@shared/services/article.service';
-import { catchError, forkJoin, map, mergeMap, of, switchMap, tap} from 'rxjs';
+import { UtilsService } from '@shared/services/utils.service';
+import { catchError, forkJoin, map, mergeMap, of, switchMap, tap, withLatestFrom} from 'rxjs';
 
 @Injectable()
 export class ArticlesEffects {
     private _store$ = inject(Store);
     private _actions$ = inject(Actions);
     private _articleService = inject(ArticleService);
+    private _utilsService = inject(UtilsService);
     getArticles$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.getArticles),
@@ -195,7 +198,15 @@ export class ArticlesEffects {
                 })
             ))
         )
-    ); 
+    );
+    downloadArticles$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(ArticleActions.downloadArticles),
+            withLatestFrom(this._store$.select(getArticlesTable)),
+            tap(([, articles]) => this._utilsService.downloadArticles(articles)),
+            map(() => ArticleActions.emptyArticleEvent())
+        )
+    );
     getAuthors$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.getAuthors),

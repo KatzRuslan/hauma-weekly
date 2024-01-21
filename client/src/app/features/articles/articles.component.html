@@ -5,7 +5,7 @@
     [scrollable]="true" scrollHeight="flex"
     [virtualScroll]="true" [virtualScrollItemSize]="0">
     <ng-template pTemplate="caption">
-        <div class="">
+        <div class="flex justify-content-between align-items-center">
             <div class="p-input-icon-left">
                 <i class="pi pi-search"></i>
                 <input
@@ -13,6 +13,15 @@
                     class="w-30rem"
                     (input)="onSearchFilter(searchInput.value)"
                     placeholder="Search title, author and tag" />
+            </div>
+            <div class="">
+                <p-button *ngIf="authorized"
+                    icon="pi pi-download text-xl"
+                    styleClass="text-xs w-2rem h-2rem"
+                    [rounded]="true" [outlined]="true" [plain]="true"
+                    pTooltip="Download Report" tooltipPosition="left"
+                    (onClick)="onMessage(messageType.DownloadArticles)">
+                </p-button>
             </div>
         </div>
     </ng-template>

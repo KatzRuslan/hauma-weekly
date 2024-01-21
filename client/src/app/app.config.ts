@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
             HttpClientModule,
             StoreModule.forRoot(reducers),
             EffectsModule.forRoot(effects),
-            StoreDevtoolsModule.instrument({ maxAge: 50 })
+            StoreDevtoolsModule.instrument({ maxAge: 50 }),
         ),
         {
             provide: APP_INITIALIZER,
@@ -36,6 +36,6 @@ export const appConfig: ApplicationConfig = {
             multi: true
         },
         provideRouter(routes),
-        ConfirmationService
+        ConfirmationService,
     ]
 };

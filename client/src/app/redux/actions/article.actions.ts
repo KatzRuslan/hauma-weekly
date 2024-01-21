@@ -30,6 +30,7 @@ export const ArticleActions = createActionGroup({
         'Update Article Success': props<{ articleId: string; article: IArticle }>(),
         'Remove Article': props<{ articleId: string }>(),
         'Remove Article Success': props<{ articleId: string }>(),
+        'Download Articles': emptyProps(),
         //
         'Get Tags': emptyProps(),
         'Get Tags Success': props<{ tags: string[]}>(),

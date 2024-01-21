@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { featureKey } from '@reducers/features.reducer';
-import { IArticle, IAuthor, ICategory, IState, IArticleType, ISource } from '@shared/interfaces/features.interfaces';
+import { IArticle, IAuthor, ICategory, IState, IArticleType, ISource, ITableArticle } from '@shared/interfaces/features.interfaces';
 
 export const selectFeature = createFeatureSelector<IState>(featureKey);
 //
@@ -25,7 +25,7 @@ export const getTags = createSelector(
 //
 
 export const getArticlesTable = createSelector(
-    getArticles, getAuthors, getCategories, getArticleTypes, getSources, (articles, authors, categories, articleTypes, sources ) => articles.map((article) => {
+    getArticles, getAuthors, getCategories, getArticleTypes, getSources, (articles, authors, categories, articleTypes, sources ): ITableArticle[] => articles.map((article) => {
         const author = authors.find(({ id }) => id === article.authorId);
         const category = categories.find(({ id }) => id === article.categoryId);
         const articleType = articleTypes.find(({ id }) => id === article.articleTypeId);
