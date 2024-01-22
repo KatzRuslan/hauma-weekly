@@ -9880,7 +9880,8 @@
 			"articleTypeId": "2698-aafc9-0c72c",
 			"authorId": "213b-a8103-c9b82",
 			"categoryId": "5fa8-ca794-7aee1",
-			"date": "31-Dec-2024",
+			"date": "2024-12-31",
+			"date2": "31-Dec-2024",
 			"edition": "04/01/2024",
 			"featured": "Post",
 			"link": "https://www.instagram.com/reel/C1cAz1PosUr/?igsh=ZmVxMzRhNnd5MG5p",
@@ -10291,19 +10292,6 @@
 			"title": "The First Babies Born in Israel in 2024",
 			"tags": [],
 			"id": "4cfa-arb64-e3108"
-		},
-		{
-			"articleTypeId": "2698-aafc9-0c72c",
-			"authorId": "213b-a8103-c9b82",
-			"categoryId": "5fa8-ca794-7aee1",
-			"date": "31-Dec-2024",
-			"edition": "04/01/2024",
-			"featured": "XXX",
-			"link": "https://www.instagram.com/reel/C1cAz1PosUr/?igsh=ZmVxMzRhNnd5MG5p",
-			"sourceId": "fe8a-s95ff-17b43",
-			"title": "Rehabilitation of Wounded Amputee IDF Soldiers",
-			"tags": [],
-			"id": "0219-ar9f3-100c7"
 		},
 		{
 			"articleTypeId": "9699-aa2ce-d904b",
@@ -15081,65 +15069,21 @@
 		{
 			"name": "Graphic",
 			"selector": "graphic",
-			"provides": [
-				"<acting>",
-				"<acting>",
-				"<acting>",
-				"instagram",
-				"x",
-				"twitter"
-			],
 			"id": "f85b-aa3f6-0ce93"
 		},
 		{
 			"name": "Post",
 			"selector": "post",
-			"provides": [
-				"instagram",
-				"wsj",
-				"browndailyherald",
-				"jpost",
-				"jewishjournal",
-				"youtube",
-				"apnews",
-				"nationalpost",
-				"honestreporting",
-				"edition",
-				"timesofisrael",
-				"foxnews",
-				"chabadharvard",
-				"armstronginstitute",
-				"unwatch",
-				"nournews",
-				"x",
-				"twitter"
-			],
 			"id": "9699-aa2ce-d904b"
-		},
-		{
-			"name": "X",
-			"selector": "x",
-			"provides": [
-				"x",
-				"twitter"
-			],
-			"id": "6ad8-a9944-8da76"
 		},
 		{
 			"name": "Video",
 			"selector": "video",
-			"provides": [
-				"youtube",
-				"tiktok"
-			],
 			"id": "2698-aafc9-0c72c"
 		},
 		{
 			"name": "Podcast",
 			"selector": "podcast",
-			"provides": [
-				"nytimes"
-			],
 			"id": "528a-a8491-56cbe"
 		}
 	],
@@ -15366,21 +15310,12 @@
 	"tags": [],
 	"users": [
 		{
-			"id": "8b8-ud9e-99834",
-			"fullname": "Шломо Бунимович",
-			"role": "admin",
-			"credentials": {
-				"username": "admin",
-				"password": "1234"
-			}
-		},
-		{
 			"id": "7c7-uh5u-77612",
-			"fullname": "Daniel",
+			"fullname": "Daniel Berko",
 			"role": "admin",
 			"credentials": {
 				"username": "Daniel",
-				"password": "Daniel2024$"
+				"password": "DanielB2024$!"
 			}
 		}
 	]

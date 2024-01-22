@@ -5,10 +5,7 @@ import { SessionsService } from './sessions.service';
 
 @Injectable()
 export class SessionsGuard implements CanActivate {
-    constructor(
-        private _sessionsService: SessionsService,
-        private _reflector: Reflector
-    ) {}
+    constructor(private _sessionsService: SessionsService, private _reflector: Reflector) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const isPublic = this._reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
         if (isPublic) {

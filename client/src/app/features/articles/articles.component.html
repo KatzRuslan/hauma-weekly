@@ -251,16 +251,16 @@
                     [rounded]="true" [text]="true" [plain]="true"
                     (onClick)="onMessage(messageType.OpenEditAricleDialog, article)">
                 </p-button>
+            </td>
+            <td class="article-date-cell">
+                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class="">{{article.date | date : 'dd MMM yyyy'}}</span>
+                </div>
                 <div class="opacity-60 absolute left-0 right-0 bottom-0 mb-1 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis" *ngIf="article.tags.length">
                     <i class="pi pi-tag text-xs"></i>
                     @for (tag of article.tags; track $index) {
                         <span class="text-xs px-2">{{tag}}</span>
                     }
-                </div>
-            </td>
-            <td class="article-date-cell">
-                <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.date | date : 'dd-MMM-YYYY'}}</span>
                 </div>
             </td>
             <td class="article-type-cell" *ngIf="authorized">
@@ -300,7 +300,7 @@
             </td>
             <td class="article-edition-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.edition | date : 'dd-MMM-YYYY'}}</span>
+                    <span class="">{{article.edition | date : 'dd MMM YYYY'}}</span>
                 </div>
             </td>
             <td class="article-button-cell" *ngIf="authorized">

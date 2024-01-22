@@ -54,7 +54,7 @@ export class ExcelUploaderComponent implements OnDestroy {
         if (!(files && files.length)) {
             return;
         }
-        const names = ['', 'date', 'articleType', 'featured', 'category', 'source', 'author', 'authorLink', 'title', 'subject', '', 'link', 'edition', 'tags'];
+        const names = ['', 'date', 'articleType', 'featured', 'category', 'source', 'author', 'authorLink', 'title', 'link', 'subject', 'edition', 'tags'];
         const articles: any[] = [];
         let isHeader = true;
         const fileReader = new FileReader();
@@ -72,11 +72,14 @@ export class ExcelUploaderComponent implements OnDestroy {
                                 const key = names[cellIndex];
                                 let value = cell.text;
                                 if (['date', 'edition'].includes(key)) {
-                                    value = dayjs(`${value}`).format('DD-MMM-YYYY');
-                                    // if (value === 'Invalid Date') {
-                                    //     value = '';
-                                    // }
+                                    value = dayjs(value).format('YYYY-MM-DD');
+                                    if (value === 'Invalid Date') {
+                                        value = '';
+                                    }
                                 }
+                                // if (key === 'ed') {
+
+                                // }
                                 rowData[key] = value;
                             }
                         });

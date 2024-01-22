@@ -44,27 +44,38 @@ export class UtilsService {
     private async _createArticlesExcel(articles: ITableArticle[]) {
         const workbook = new Workbook()
         const worksheet = workbook.addWorksheet('Hauma Weekly Report');
-        const titleRow = worksheet.addRow(['Date', 'Type', 'Featured', 'Category', 'Source', 'Author', 'Author Link', 'Title', 'Post Link', 'Subject',	'Issue Date', 'Tags']);
-        titleRow.font = { name: 'Roboto', family: 4, size: 11, bold: true };
+        worksheet.columns = [
+            { header: 'Date', key: 'date', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Type', key: 'articleType', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Featured', key: 'featured', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Category', key: 'category', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Source', key: 'source', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Author', key: 'author', width: 26, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Author Link', key: 'authorLink', width: 36, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Title', key: 'title', width: 40, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Post Link', key: 'link', width: 40, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Subject', key: 'subject', width: 16 , style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } }},
+            { header: 'Issue Date', key: 'edition', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } }, },
+            { header: 'Tags', key: 'tags', width: 40, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+        ];
         articles.forEach((article) => {
-            const row = worksheet.addRow([
-                article.date,
-                article.articleTypeName,
-                article.featured,
-                article.categoryName,
-                article.sourceName,
-                article.authorName,
-                article.authorLink,
-                article.title,
-                article.link,
-                article.subject,
-                article.edition,
-                article.tags.join(', ')
-            ]);
+            const row = worksheet.addRow({
+                date: dayjs(article.date).format('DD MMM YYYY'),
+                articleType: article.articleTypeName,
+                featured: article.featured,
+                category: article.categoryName,
+                source: article.sourceName,
+                author: article.authorName,
+                authorLink: article.authorLink,
+                title: article.title,
+                link: article.link,
+                subject: article.subject,
+                edition: article.edition ? dayjs(article.edition).format('DD MMM YYYY') : '',
+                tags: article.tags.join(', ')
+            });
             row.font = { name: 'Roboto', family: 4, size: 11 };
+            row.commit();
         });
-        const widths = [16, 16, 16, 16, 16, 16, 26, 36, 40, 40, 16, 40];
-        worksheet.columns.forEach((column, index) => column.width = widths.at(index));
         const excelData = await workbook.xlsx.writeBuffer();
         return excelData;
     }

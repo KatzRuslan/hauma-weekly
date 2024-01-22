@@ -14,7 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { ISubmitArticle, IArticle, IArticleType, IAuthor, ICategory, ISource } from '@shared/interfaces/features.interfaces';
-import { firstValueFrom } from 'rxjs';
+import { delay, firstValueFrom, from } from 'rxjs';
 import dayjs from 'dayjs';
 
 @Component({
@@ -59,6 +59,7 @@ export class ArticleDialogComponent implements OnInit {
             authorLink: new FormControl('', [this.articleAuthorLinkValidator().bind(this)]),
         })
     });
+    private _kept?:any;
     public authorLink?: string;
     public fieldModes = {
         articleTypeId: true,
@@ -68,22 +69,7 @@ export class ArticleDialogComponent implements OnInit {
     };
     public inproccess = false;
     get formDisabled() {
-        let changed = false;
-        if (this._dynamicDialogConfig.data) {
-            changed = (
-                this.formGroup.value.authorId === this._dynamicDialogConfig.data.authorId &&
-                this.formGroup.value.categoryId === this._dynamicDialogConfig.data.categoryId &&
-                this.formGroup.value.articleTypeId === this._dynamicDialogConfig.data.articleTypeId &&
-                this.formGroup.value.sourceId === this._dynamicDialogConfig.data.sourceId &&
-                dayjs(this.formGroup.value.date).format() === dayjs(this._dynamicDialogConfig.data.date).format() &&
-                dayjs(this.formGroup.value.edition).format() === dayjs(this._dynamicDialogConfig.data.edition).format() &&
-                this.formGroup.value.subject === this._dynamicDialogConfig.data.subject &&
-                this.formGroup.value.featured === this._dynamicDialogConfig.data.featured &&
-                JSON.stringify((this.formGroup.value.tags ?? []).sort()) === JSON.stringify((this._dynamicDialogConfig.data.tags.sort() ?? [])) &&
-                this.formGroup.value.title === this._dynamicDialogConfig.data.title &&
-                this.formGroup.value.link === this._dynamicDialogConfig.data.link
-            );
-        }
+        const changed = JSON.stringify(this.formGroup.value) === this._kept;
         return this.formGroup.invalid || this.inproccess || changed;
     }
     onSubmit() {
@@ -91,11 +77,15 @@ export class ArticleDialogComponent implements OnInit {
         if (this._articleId) {
             this._store$.dispatch(ArticleActions.updateArticle({
                 articleId: this._articleId,
-                article: this.formGroup.value as ISubmitArticle,
+                article: {
+                    ...this.formGroup.value,
+                    date: dayjs(this.formGroup.value.date).format('YYYY-MM-DD'),
+                    edition: this.formGroup.value.edition ? dayjs(this.formGroup.value.edition).format('YYYY-MM-DD') : ''
+                } as ISubmitArticle,
                 callback: (error: any) => {
                     if (error) {
                         console.log();
-                        console.log(error);
+                        console.error(error);
                         console.log(error.message);
                     } else {
                         this._dynamicDialogRef.close();
@@ -125,20 +115,19 @@ export class ArticleDialogComponent implements OnInit {
     }
     parseLink() {
         const { articleTypeId, sourceId } = this._utilsService.parseTileLink(this.formGroup.value.link ?? '', this.articleTypes, this.sources);
-        if (articleTypeId) {
-            this.changeFieldModes({ articleTypeId: true });
-            this.formGroup.get('articleTypeId')?.setValue(articleTypeId);
-        }
-        if (sourceId) {
-            this.changeFieldModes({ sourceId: true });
-            this.formGroup.get('sourceId')?.setValue(sourceId);
-        }
+        //
+        this.changeFieldModes({ articleTypeId: true });
+        this.formGroup.get('articleTypeId')?.setValue(articleTypeId);
+        this.formGroup.get('articleTypeId')?.updateValueAndValidity();
+        //
+        this.changeFieldModes({ sourceId: true });
+        this.formGroup.get('sourceId')?.setValue(sourceId);
+        this.formGroup.get('sourceId')?.updateValueAndValidity();
     }
     parseAuthorLink() {
         const authorName = this._utilsService.parseAuthorLink(`${this.formGroup.value.addeds?.authorLink}`);
-        if (authorName) {
-            this.formGroup.get('addeds')?.get('authorName')?.setValue(`${authorName}`);
-        }
+        this.formGroup.get('addeds')?.get('authorName')?.setValue(`${authorName ?? ''}`);
+        this.formGroup.get('addeds')?.updateValueAndValidity();
     }
     getAuthorLink() {
         const author = this.authors.find(({ id }) => id === this.formGroup.value.authorId);
@@ -146,39 +135,61 @@ export class ArticleDialogComponent implements OnInit {
     }
     changeFieldModes(mode: {[key:string]: boolean}) {
         this.fieldModes = { ...this.fieldModes, ...mode };
-        const [{key, value}] = Object.entries(mode).map(([key, value]) => ({key, value}));
-        switch (true) {
-            case (key === 'articleTypeId' && value):
-                this.formGroup.get('addeds')?.get('articleTypeName')?.setValue('');
-                break;
-            case (key === 'articleTypeId' && !value):
-                this.formGroup.get('articleTypeId')?.setValue('');
-                break;
-            case (key === 'categoryId' && value):
-                this.formGroup.get('addeds')?.get('categoryName')?.setValue('');
-                break;
-            case (key === 'categoryId' && !value):
-                this.formGroup.get('categoryId')?.setValue('');
-                break;
-            case (key === 'sourceId' && value):
-                this.formGroup.get('addeds')?.get('sourceName')?.setValue('');
-                break;
-            case (key === 'sourceId' && !value):
-                this.formGroup.get('sourceId')?.setValue('');
-                break;
-            case (key === 'authorId' && value):
-                this.formGroup.get('addeds')?.get('authorName')?.setValue('');
-                this.formGroup.get('addeds')?.get('authorLink')?.setValue('');
-                break;
-            case (key === 'authorId' && !value):
-                this.formGroup.get('authorId')?.setValue('');
-                this.authorLink  = '';
-                break;
-        
-            default:
-                console.error(key);
-                break;
-        }
+        const subscriber = from(Object.entries(mode)
+            .map(([key, value]) => ({key, value})))
+            .pipe(delay(0))
+            .subscribe(({key, value}) => {
+                switch (true) {
+                    case (key === 'articleTypeId' && value):
+                        this.formGroup.get('addeds')?.get('articleTypeName')?.setValue('');
+                        this.formGroup.get('articleTypeId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('articleTypeName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'articleTypeId' && !value):
+                        this.formGroup.get('articleTypeId')?.setValue('');
+                        this.formGroup.get('articleTypeId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('articleTypeName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'categoryId' && value):
+                        this.formGroup.get('addeds')?.get('categoryName')?.setValue('');
+                        this.formGroup.get('categoryId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('categoryName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'categoryId' && !value):
+                        this.formGroup.get('categoryId')?.setValue('');
+                        this.formGroup.get('categoryId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('categoryName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'sourceId' && value):
+                        this.formGroup.get('addeds')?.get('sourceName')?.setValue('');
+                        this.formGroup.get('sourceId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('sourceName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'sourceId' && !value):
+                        this.formGroup.get('sourceId')?.setValue('');
+                        this.formGroup.get('sourceId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('sourceName')?.updateValueAndValidity();
+                        break;
+                    case (key === 'authorId' && value):
+                        this.formGroup.get('addeds')?.get('authorName')?.setValue('');
+                        this.formGroup.get('addeds')?.get('authorLink')?.setValue('');
+                        this.formGroup.get('authorId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('authorName')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('authorLink')?.updateValueAndValidity();
+                        break;
+                    case (key === 'authorId' && !value):
+                        this.formGroup.get('authorId')?.setValue('');
+                        this.formGroup.get('authorId')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('authorName')?.updateValueAndValidity();
+                        this.formGroup.get('addeds')?.get('authorLink')?.updateValueAndValidity();
+                        this.authorLink  = '';
+                        break;
+                    default:
+                        console.error(key);
+                        break;
+                }
+                subscriber.unsubscribe();
+            });
     }
     createTag(input: HTMLInputElement) {
         if (input.value && !this.tags.includes(input.value)) {
@@ -193,7 +204,7 @@ export class ArticleDialogComponent implements OnInit {
             if (!this.formGroup) {
                 return  null;
             }
-            if ((this._articles ?? []).find(({ title, id }) => title === control.value && (!!this._articleId ? id !== `${this._articleId}` : true))) {
+            if ((this._articles ?? []).find(({ title, id }) => title === control.value && (this._articleId ? id !== `${this._articleId}` : true))) {
                 return { duplicate_title: true }
             }
             return null;
@@ -204,7 +215,7 @@ export class ArticleDialogComponent implements OnInit {
             if (!this.formGroup) {
                 return  null;
             }
-            if ((this._articles ?? []).find(({ link, id }) => link === control.value && (!!this._articleId ? id !== `${this._articleId}` : true))) {
+            if ((this._articles ?? []).find(({ link, id }) => link === control.value && (this._articleId ? id !== `${this._articleId}` : true))) {
                 return { duplicate_link: true }
             }
             return null;
@@ -299,7 +310,7 @@ export class ArticleDialogComponent implements OnInit {
         }
     }
     articleAuthorNameValidator(): ValidatorFn {
-        return (control: AbstractControl): ValidationErrors |  null => {
+        return (control: AbstractControl): any | null => {
             if (!this.formGroup || this.fieldModes.authorId) {
                 return  null;
             }
@@ -320,25 +331,65 @@ export class ArticleDialogComponent implements OnInit {
         this.sources = await firstValueFrom(this._store$.select(getSources));
         this.tags = await firstValueFrom(this._store$.select(getTags));
         if (this._dynamicDialogConfig.data) {
-            this.formGroup.get('authorId')?.setValue(this._dynamicDialogConfig.data.authorId);
-            this.formGroup.get('categoryId')?.setValue(this._dynamicDialogConfig.data.categoryId);
-            this.formGroup.get('articleTypeId')?.setValue(this._dynamicDialogConfig.data.articleTypeId);
-            this.formGroup.get('sourceId')?.setValue(this._dynamicDialogConfig.data.sourceId);
+            this.fieldModes.authorId  = true;
+            //
+            const authorId = this.formGroup.get('authorId');
+            authorId?.setValue(this._dynamicDialogConfig.data.authorId);
+            authorId?.updateValueAndValidity();
+            //
+            const categoryId = this.formGroup.get('categoryId');
+            categoryId?.setValue(this._dynamicDialogConfig.data.categoryId);
+            categoryId?.updateValueAndValidity();
+            //
+            const articleTypeId = this.formGroup.get('articleTypeId');
+            articleTypeId?.setValue(this._dynamicDialogConfig.data.articleTypeId);
+            articleTypeId?.updateValueAndValidity();
+            //
+            const sourceId = this.formGroup.get('sourceId');
+            sourceId?.setValue(this._dynamicDialogConfig.data.sourceId);
+            sourceId?.updateValueAndValidity();
+            //
+            const subject = this.formGroup.get('subject');
+            subject?.setValue(this._dynamicDialogConfig.data.subject);
+            subject?.updateValueAndValidity();
+            //
+            const featured = this.formGroup.get('featured');
+            featured?.setValue(this._dynamicDialogConfig.data.featured);
+            featured?.updateValueAndValidity();
+            //
+            const link = this.formGroup.get('link');
+            link?.setValue(this._dynamicDialogConfig.data.link);
+            link?.updateValueAndValidity();
+            //
+            const title = this.formGroup.get('title');
+            title?.setValue(this._dynamicDialogConfig.data.title);
+            title?.updateValueAndValidity();
+            //
+            const tags = this.formGroup.get('tags');
+            tags?.setValue(this._dynamicDialogConfig.data.tags ?? []);
+            tags?.updateValueAndValidity();
+            //
             if (this._dynamicDialogConfig.data.date) {
-                this.formGroup.get('date')?.setValue(new Date(this._dynamicDialogConfig.data.date) as any);
+                const date = this.formGroup.get('date');
+                date?.setValue(new Date(this._dynamicDialogConfig.data.date) as any);
+                date?.updateValueAndValidity();
             }
             if (this._dynamicDialogConfig.data.edition) {
-                this.formGroup.get('edition')?.setValue(new Date(this._dynamicDialogConfig.data.edition) as any);
+                const edition = this.formGroup.get('edition');
+                edition?.setValue(new Date(this._dynamicDialogConfig.data.edition) as any);
+                edition?.updateValueAndValidity();
             }
-            this.formGroup.get('subject')?.setValue(this._dynamicDialogConfig.data.subject);
-            this.formGroup.get('featured')?.setValue(this._dynamicDialogConfig.data.featured);
-            this.formGroup.get('link')?.setValue(this._dynamicDialogConfig.data.link);
-            this.formGroup.get('title')?.setValue(this._dynamicDialogConfig.data.title);
-            this.formGroup.get('tags')?.setValue(this._dynamicDialogConfig.data.tags);
-            this.fieldModes.authorId  = true;
+            this.formGroup.get('addeds')?.get('authorName')?.updateValueAndValidity();
+            this.formGroup.get('addeds')?.get('authorLink')?.updateValueAndValidity();
+            this.formGroup.get('addeds')?.get('articleTypeName')?.updateValueAndValidity();
+            this.formGroup.get('addeds')?.get('categoryName')?.updateValueAndValidity();
+            this.formGroup.get('addeds')?.get('sourceName')?.updateValueAndValidity();
             this.getAuthorLink();
         } else {
-            this.formGroup.get('date')?.setValue(new Date() as any);
+            const date = this.formGroup.get('date');
+            date?.setValue(new Date() as any);
+            date?.updateValueAndValidity();
         }
+        this._kept = JSON.stringify(this.formGroup.value);
     }
 }
