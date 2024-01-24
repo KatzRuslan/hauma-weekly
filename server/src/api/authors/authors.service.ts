@@ -10,7 +10,7 @@ export class AuthorsService {
     }
     async addAuthor(author: IAuthor) {
         author.id = this._appService.generateUUID('XXXY-aYXXX-XXXXX');
-        await this._appService.post(author, 'authors', 'name');
+        await this._appService.post(author, 'authors', 'link');
         return author;
     }
 }

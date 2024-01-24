@@ -9,14 +9,7 @@ import { TypesService } from '../types/types.service';
 
 @Injectable()
 export class ArticlesService {
-    constructor(
-        private readonly _appService: AppService,
-        private readonly _authorsService: AuthorsService,
-        private readonly _typesService: TypesService,
-        private readonly _categoriesService: CategoriesService,
-        private readonly _sourcesService: SourcesService,
-        private readonly _tagsService: TagsService
-    ) {}
+    constructor(private readonly _appService: AppService, private readonly _authorsService: AuthorsService, private readonly _typesService: TypesService, private readonly _categoriesService: CategoriesService, private readonly _sourcesService: SourcesService, private readonly _tagsService: TagsService) {}
     async getArticles() {
         return await this._appService.get('articles');
     }
@@ -72,7 +65,7 @@ export class ArticlesService {
             const articleTypes = await this._typesService.getTypes();
             const categories = await this._categoriesService.getCategories();
             const sources = await this._sourcesService.getSources();
-            const tags = await this._tagsService.getTags();
+            // const tags = await this._tagsService.getTags();
             const submit: ISubmitArticle = {
                 date: candidate.date && candidate.date !== 'Invalid Date' ? candidate.date : '',
                 edition: candidate.edition && candidate.edition !== 'Invalid Date' ? candidate.edition : '',
@@ -81,32 +74,32 @@ export class ArticlesService {
                 tags: candidate.tags,
                 addeds: {}
             } as ISubmitArticle;
-            if (_articles.find(({title, link}) => candidate.title === title || candidate.link === link)) {
+            if (_articles.find(({ title, link }) => candidate.title === title || candidate.link === link)) {
                 existed.push(candidate);
             } else {
                 submit.title = candidate.title;
                 submit.link = candidate.link;
                 //
-                const author = authors.find(({name}) => name === candidate.author);
+                const author = authors.find(({ name }) => name === candidate.author);
                 if (author) {
                     submit.authorId = author.id;
                 } else {
                     submit.addeds.authorName = candidate.author;
                     submit.addeds.authorLink = candidate.authorLink;
                 }
-                const articleType = articleTypes.find(({name}) => name === candidate.articleType);
+                const articleType = articleTypes.find(({ name }) => name === candidate.articleType);
                 if (articleType) {
                     submit.articleTypeId = articleType.id;
                 } else {
                     submit.addeds.articleTypeName = candidate.articleType;
                 }
-                const category = categories.find(({name}) => name === candidate.category);
+                const category = categories.find(({ name }) => name === candidate.category);
                 if (category) {
                     submit.categoryId = category.id;
                 } else {
                     submit.addeds.categoryName = candidate.category;
                 }
-                const source = sources.find(({name}) => name === candidate.source);
+                const source = sources.find(({ name }) => name === candidate.source);
                 if (source) {
                     submit.sourceId = source.id;
                 } else {
@@ -114,12 +107,12 @@ export class ArticlesService {
                 }
                 //
                 const { article, updates } = await this.addArticle(submit);
-                updates.forEach(node => {
+                updates.forEach((node) => {
                     if (!_updates.includes(node)) {
                         _updates.push(node);
                     }
-                })
-                articles.push(article);               
+                });
+                articles.push(article);
             }
         }
         return { articles, updates: _updates, existed };
