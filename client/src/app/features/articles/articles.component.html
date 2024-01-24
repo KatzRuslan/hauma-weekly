@@ -14,7 +14,7 @@
                     (input)="onSearchFilter(searchInput.value)"
                     placeholder="Search title, author and tag" />
             </div>
-            <div class="">
+            <div class="flex align-items-center gap-4">
                 <p-button *ngIf="authorized"
                     icon="pi pi-download text-xl"
                     styleClass="text-xs w-2rem h-2rem"
@@ -22,17 +22,11 @@
                     pTooltip="Download Report" tooltipPosition="left"
                     (onClick)="onMessage(messageType.DownloadArticles)">
                 </p-button>
-            </div>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="summary">
-        <div class="flex justify-content-end">
-            <div class="px-2">
-                <p-button
+                <p-button *ngIf="authorized"
                     icon="pi pi-plus text-xl"
-                    styleClass="w-3rem h-3rem"
-                    size="large"
-                    [rounded]="true" [rounded]="true" [plain]="true"
+                    styleClass="text-xs w-2rem h-2rem"
+                    [rounded]="true" [outlined]="true" [plain]="true"
+                    pTooltip="Add Aricle" tooltipPosition="left"
                     (onClick)="onMessage(messageType.OpenAddAricleDialog)">
                 </p-button>
             </div>

@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { ArticleActions } from '@actions/article.actions';
 import { getArticleTypes, getArticles, getAuthors, getCategories, getSources, getTags } from '@selectors/features.selectors';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -22,7 +23,7 @@ import dayjs from 'dayjs';
     standalone: true,
     imports: [
         CommonModule, ReactiveFormsModule, FormsModule, TooltipModule, TooltipDirective,
-        InputTextModule, DropdownModule, MultiSelectModule, CalendarModule, ButtonModule
+        InputTextModule, AutoCompleteModule, DropdownModule, MultiSelectModule, CalendarModule, ButtonModule
     ],
     templateUrl: './article-dialog.component.html',
     styleUrl: './article-dialog.component.scss'
@@ -61,6 +62,8 @@ export class ArticleDialogComponent implements OnInit {
     });
     private _kept?:any;
     public authorLink?: string;
+    public featuredOptions: string[] = [];
+    public featuredSuggestions: string[] = [];
     public fieldModes = {
         articleTypeId: true,
         categoryId: true,
@@ -191,6 +194,10 @@ export class ArticleDialogComponent implements OnInit {
                 subscriber.unsubscribe();
             });
     }
+    filterFeatureds({ query }: AutoCompleteCompleteEvent) {
+        this.featuredSuggestions = this.featuredOptions
+            .filter((featured) => featured.toLowerCase().startsWith(query.toLowerCase()));
+    }
     createTag(input: HTMLInputElement) {
         if (input.value && !this.tags.includes(input.value)) {
             this.tags.push(input.value);
@@ -317,9 +324,11 @@ export class ArticleDialogComponent implements OnInit {
             if (!control.value) {
                 return { required: true };
             }
-            if ((this.authors ?? []).find(({ name }) => `${name}`.toLowerCase() === `${control.value}`.toLowerCase())) {
-                return { duplicate_author_name: true }
-            }
+            /*
+            // if ((this.authors ?? []).find(({ name }) => `${name}`.toLowerCase() === `${control.value}`.toLowerCase())) {
+            //     return { duplicate_author_name: true }
+            // }
+            */
             return null;
         }
     }
@@ -330,6 +339,13 @@ export class ArticleDialogComponent implements OnInit {
         this.articleTypes = await firstValueFrom(this._store$.select(getArticleTypes));
         this.sources = await firstValueFrom(this._store$.select(getSources));
         this.tags = await firstValueFrom(this._store$.select(getTags));
+        //
+        this._articles.map(({ featured }) => featured).sort().forEach((featured) => {
+            if (featured && !this.featuredOptions.includes(featured)) {
+                this.featuredOptions.push(featured);
+            }
+        });
+        console.log(this.featuredOptions);
         if (this._dynamicDialogConfig.data) {
             this.fieldModes.authorId  = true;
             //

@@ -1,45 +1,47 @@
 <div class="" [formGroup]="formGroup">
-    <div class="flex gap-4 justify-content-between gap-8 mb-6 pl-4 pt-3">
-        <div class="w-34rem">
-            <div class="flex align-items-center mb-2">
-                <div class="w-8rem">
-                    <span class="">Post Link</span>
-                </div>
-                <div class="flex gap-2 align-items-center">
-                    <div class="">
-                        <input
-                            #titleLink
-                            formControlName="link"
-                            type="text" pInputText
-                            class="w-20rem"
-                            placeholder="Link">
-                    </div>
-                    <div class="">
-                        <p-button
-                            icon="pi pi-caret-right"
-                            [disabled]="!titleLink.value"
-                            [rounded]="true" [text]="true" [plain]="true"
-                            (click)="parseLink()">
-                        </p-button>
-                    </div>
-                </div>
+    <div class="pl-4 pt-3 mb-2">
+        <div class="flex align-items-center mb-2">
+            <div class="w-8rem">
+                <span class="">Post Link</span>
             </div>
-            <div class="flex align-items-center mb-2">
-                <div class="w-8rem">
-                    <span class="">Post Title</span>
-                </div>
+            <div class="flex gap-2 align-items-center">
                 <div class="">
                     <input
-                        #inpitTile
-                        formControlName="title"
+                        #titleLink
+                        formControlName="link"
                         type="text" pInputText
-                        class="w-20rem"
-                        placeholder="Title">
+                        class="w-59rem"
+                        placeholder="Link">
                 </div>
-                <div *ngIf="inpitTile.value.length > 1" class="w-5rem white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip pTooltip="{{inpitTile.value.length+' letters'}}" tooltipPosition="top">
-                    <span class="text-xs px-2">{{inpitTile.value.length}} letters</span>
+                <div class="">
+                    <p-button
+                        icon="pi pi-caret-right"
+                        [disabled]="!titleLink.value"
+                        [rounded]="true" [text]="true" [plain]="true"
+                        (click)="parseLink()">
+                    </p-button>
                 </div>
             </div>
+        </div>
+        <div class="flex align-items-center mb-2">
+            <div class="w-8rem">
+                <span class="">Post Title</span>
+            </div>
+            <div class="">
+                <input
+                    #inpitTile
+                    formControlName="title"
+                    type="text" pInputText
+                    class="w-59rem"
+                    placeholder="Title">
+            </div>
+            <div *ngIf="inpitTile.value.length > 1" class="w-5rem white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip pTooltip="{{inpitTile.value.length+' letters'}}" tooltipPosition="top">
+                <span class="text-xs px-2">{{inpitTile.value.length}} letters</span>
+            </div>
+        </div>
+    </div>
+    <div class="flex gap-4 justify-content-between gap-8 mb-6 pl-4">
+        <div class="w-34rem">
             <div class="flex align-items-center mb-2">
                 <div class="w-8rem">
                     <span class="">Subject</span>
@@ -57,11 +59,56 @@
                     <span class="">Featured</span>
                 </div>
                 <div class="">
-                    <input
+                    <p-autoComplete
                         formControlName="featured"
-                        type="text" pInputText
-                        class="w-20rem"
-                        placeholder="Featured">
+                        inputStyleClass="w-20rem"
+                        placeholder="Featured"
+                        [suggestions]="featuredSuggestions"
+                        (completeMethod)="filterFeatureds($event)">
+                    </p-autoComplete>
+                </div>
+            </div>
+            <div class="flex align-items-center mb-2">
+                <div class="w-8rem">
+                    <span class="">Category</span>
+                </div>
+                <div class="flex align-items-center gap-2">
+                @if (fieldModes.categoryId) {
+                    <div class="">
+                        <p-dropdown
+                            formControlName="categoryId" [options]="categories"
+                            [filter]="true" filterBy="name"
+                            optionValue="id" optionLabel="name"
+                            styleClass="w-20rem"
+                            appendTo="body"
+                            placeholder="Select a Category">
+                        </p-dropdown>
+                    </div>
+                    <div class="">
+                        <p-button
+                            icon="pi pi-plus-circle"
+                            styleClass=""
+                            [rounded]="true" [text]="true" [plain]="true"
+                            (click)="changeFieldModes({categoryId:false})">
+                        </p-button>
+                    </div>
+                } @else {
+                    <div class="" formGroupName="addeds">
+                        <input
+                            formControlName="categoryName"
+                            type="text" pInputText
+                            class="w-20rem"
+                            placeholder="New Category">
+                    </div>
+                    <div class="">
+                        <p-button
+                            icon="pi pi-minus-circle"
+                            styleClass=""
+                            [rounded]="true" [text]="true" [plain]="true"
+                            (click)="changeFieldModes({categoryId:true})">
+                        </p-button>
+                    </div>
+                }
                 </div>
             </div>
             @if (fieldModes.authorId) {
@@ -291,49 +338,6 @@
                             styleClass=""
                             [rounded]="true" [text]="true" [plain]="true"
                             (click)="changeFieldModes({sourceId:true})">
-                        </p-button>
-                    </div>
-                }
-                </div>
-            </div>
-            <div class="flex align-items-center mb-2">
-                <div class="w-8rem">
-                    <span class="">Category</span>
-                </div>
-                <div class="flex align-items-center gap-2">
-                @if (fieldModes.categoryId) {
-                    <div class="">
-                        <p-dropdown
-                            formControlName="categoryId" [options]="categories"
-                            [filter]="true" filterBy="name"
-                            optionValue="id" optionLabel="name"
-                            styleClass="w-20rem"
-                            appendTo="body"
-                            placeholder="Select a Category">
-                        </p-dropdown>
-                    </div>
-                    <div class="">
-                        <p-button
-                            icon="pi pi-plus-circle"
-                            styleClass=""
-                            [rounded]="true" [text]="true" [plain]="true"
-                            (click)="changeFieldModes({categoryId:false})">
-                        </p-button>
-                    </div>
-                } @else {
-                    <div class="" formGroupName="addeds">
-                        <input
-                            formControlName="categoryName"
-                            type="text" pInputText
-                            class="w-20rem"
-                            placeholder="New Category">
-                    </div>
-                    <div class="">
-                        <p-button
-                            icon="pi pi-minus-circle"
-                            styleClass=""
-                            [rounded]="true" [text]="true" [plain]="true"
-                            (click)="changeFieldModes({categoryId:true})">
                         </p-button>
                     </div>
                 }

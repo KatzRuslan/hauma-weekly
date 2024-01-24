@@ -15,11 +15,6 @@ $styles: (
 
 :host ::ng-deep {
     .articles-table {
-        &:not(.authorized) {
-            .p-datatable-footer, .toggle-edit-mode-button-container {
-                display: none;
-            }
-        }
         @each $name, $map in $styles {
             $authorized-width: map-get($map, "authorized-width");
             $unauthorized-width: map-get($map, "unauthorized-width");
