@@ -12,7 +12,10 @@ export class UtilsService {
             articleTypeId: '',
             sourceId: ''
         };
-        const [origin] = `${link}`.toLowerCase().replace('://', '∇').split('/').map(str => str.replace('∇', '://'));
+        let [origin] = `${link}`.toLowerCase().replace('://', '∇').split('/').map(str => str.replace('∇', '://'));
+        if (origin === 'https://twitter.com') {
+            origin = 'https://x.com'
+        }
         const source = sources.find(({ provide }) => provide === origin);
         parsed.sourceId = `${source?.id ?? ''}`;
         const articleTypeSelector = ['youtube', 'instagram'].includes(source?.selector ?? '') ? 'video' : 'post';
