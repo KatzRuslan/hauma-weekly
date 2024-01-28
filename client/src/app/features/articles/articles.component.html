@@ -249,7 +249,7 @@
             </td>
             <td class="article-date-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.date | date : 'dd MMM yyyy'}}</span>
+                    <span class="">{{article.date | date : 'dd-MMM-YYYY'}}</span>
                 </div>
                 <div class="opacity-60 absolute left-0 right-0 bottom-0 mb-1 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis" *ngIf="article.tags.length">
                     <i class="pi pi-tag text-xs"></i>
@@ -295,7 +295,7 @@
             </td>
             <td class="article-edition-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.edition | date : 'dd MMM YYYY'}}</span>
+                    <span class="">{{article.edition | date : 'dd-MMM-YYYY'}}</span>
                 </div>
             </td>
             <td class="article-button-cell" *ngIf="authorized">

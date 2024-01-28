@@ -86,7 +86,7 @@ export class AppService {
         });
     }
     parseLink(link: string) {
-        const candidate = `${link}`.toLowerCase().replace('://', '∇').replace('twitter.com', 'x.com');
+        const candidate = `${link}`.toLowerCase().replace('https://twitter.com', 'https://x.com').replace('://', '∇').replace('twitter.com', 'x.com');
         const domain = candidate.split('/')[0].replace('∇', '://');
         const [selector] = `${candidate}`.replace('https∇', '').replace('http∇', '').replace('www.', '').split('.');
         return { domain, selector };

@@ -12,10 +12,7 @@ export class UtilsService {
             articleTypeId: '',
             sourceId: ''
         };
-        let [origin] = `${link}`.toLowerCase().replace('://', '∇').split('/').map(str => str.replace('∇', '://'));
-        if (origin === 'https://twitter.com') {
-            origin = 'https://x.com'
-        }
+        const [origin] = `${link}`.toLowerCase().replace('https://twitter.com', 'https://x.com').replace('://', '∇').split('/').map(str => str.replace('∇', '://'));
         const source = sources.find(({ provide }) => provide === origin);
         parsed.sourceId = `${source?.id ?? ''}`;
         const articleTypeSelector = ['youtube', 'instagram'].includes(source?.selector ?? '') ? 'video' : 'post';
@@ -63,7 +60,7 @@ export class UtilsService {
         ];
         articles.forEach((article) => {
             const row = worksheet.addRow({
-                date: dayjs(article.date).format('DD MMM YYYY'),
+                date: dayjs(article.date).format('DD-MMM-YYYY'),
                 articleType: article.articleTypeName,
                 featured: article.featured,
                 category: article.categoryName,
@@ -73,7 +70,7 @@ export class UtilsService {
                 title: article.title,
                 link: article.link,
                 subject: article.subject,
-                edition: article.edition ? dayjs(article.edition).format('DD MMM YYYY') : '',
+                edition: article.edition ? dayjs(article.edition).format('DD-MMM-YYYY') : '',
                 tags: article.tags.join(', ')
             });
             row.font = { name: 'Roboto', family: 4, size: 11 };
