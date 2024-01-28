@@ -36,18 +36,16 @@
               "node_modules/primeicons/primeicons.css",
               "src/styles/main.scss"
             ],
-            "scripts": [
-              "node_modules/requirejs/require.js"
-            ],
-            "allowedCommonJsDependencies": ["dayjs"]
+            "scripts": [],
+            "allowedCommonJsDependencies": ["dayjs", "exceljs"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5mb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
