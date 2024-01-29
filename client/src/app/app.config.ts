@@ -14,6 +14,7 @@ import { routes } from './app.routes';
 import { ConfigService } from '@services/config.service';
 import { InterceptorService } from '@services/interceptor.service';
 import { ConfirmationService } from 'primeng/api';
+import { ProgressSpinnerService } from '@shared/services/progress-spinner.service';
 
 const appInitializer = (configService: ConfigService) => {
     return () => configService.load();
@@ -37,5 +38,6 @@ export const appConfig: ApplicationConfig = {
         },
         provideRouter(routes),
         ConfirmationService,
+        ProgressSpinnerService
     ]
 };

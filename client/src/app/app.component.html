@@ -1,3 +1,10 @@
 <app-main-header></app-main-header>
 <router-outlet></router-outlet>
 <p-confirmDialog></p-confirmDialog>
+<div *ngIf="spinerActive$ | async" class="progress-spinner-contaner flex justify-content-center align-items-center absolute w-full h-full bg-black-alpha-60">
+    <p-progressSpinner
+        styleClass="w-10rem h-10rem"
+        strokeWidth="4"
+        animationDuration="1.4s">
+    </p-progressSpinner>
+</div>

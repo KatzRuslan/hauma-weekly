@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SessionsActions } from '@actions/sessions.actions';
-import { SessionsService } from './sessions.service';
-import { firstValueFrom, tap } from 'rxjs';
 import { ArticleActions } from '@actions/article.actions';
+import { SessionsService } from './sessions.service';
+import { firstValueFrom, map, tap } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ConfigService {

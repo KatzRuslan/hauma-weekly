@@ -31,6 +31,8 @@ export const ArticleActions = createActionGroup({
         'Remove Article': props<{ articleId: string }>(),
         'Remove Article Success': props<{ articleId: string }>(),
         'Download Articles': emptyProps(),
+        'Get Articles From Excel': props<{ file: File, callback: (articles: IArticle[]) => void} >(),
+        'Get Articles From Excel Success': props<{ articles: IArticle[] }>(),
         //
         'Get Tags': emptyProps(),
         'Get Tags Success': props<{ tags: string[]}>(),

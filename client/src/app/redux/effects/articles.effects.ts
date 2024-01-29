@@ -23,6 +23,19 @@ export class ArticlesEffects {
             ))
         )
     );
+    getArticlesFromExcel$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(ArticleActions.getArticlesFromExcel),
+            mergeMap(({ file, callback }) => this._utilsService.getArticlesFromExcel(file).pipe(
+                map((d: any) => {
+                    // const json = this._utilsService.getArticlesFromExcel(file);
+                    // console.log(json);
+                    callback(d);
+                    return ArticleActions.emptyArticleEvent()
+                })                
+            ))
+        )
+    );
     addArticle$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.addArticle),

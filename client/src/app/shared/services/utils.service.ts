@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { IArticleType, ISource, ITableArticle } from '@shared/interfaces/features.interfaces';
+import { IArticle, IArticleType, ISource, ITableArticle } from '@shared/interfaces/features.interfaces';
 import  { Workbook } from 'exceljs';
 import dayjs from 'dayjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -88,5 +89,34 @@ export class UtilsService {
         a.download = `hauma-weekly.${dayjs().format('DD-MMM-YYYY')}.xlsx`;
         a.click();
         window.URL.revokeObjectURL(blobUrl);
+    }
+    getArticlesFromExcel(file: File) {
+        const articles: any[] = [];
+        const workbook = new Workbook();
+        return new Observable((subscriber) => {
+            file.arrayBuffer().then(async (buffer) => {
+                await workbook.xlsx.load(buffer);
+                const [worksheets] = workbook.worksheets;
+                worksheets.getRows(2, worksheets.rowCount - 1)?.forEach((row) => {
+                    const [, date, articleType, featured, category, source, author, authorLink, title, link, subject, edition, tags] = row.values as any;
+                    articles.push({
+                        date: date ? dayjs(date, 'DD-MMM-YYYY').format('YYYY-MM-DD') : '',
+                        articleType,
+                        featured,
+                        category,
+                        source,
+                        author,
+                        authorLink,
+                        title,
+                        link,
+                        subject,
+                        edition: edition ? dayjs(edition, 'DD-MMM-YYYY').format('YYYY-MM-DD') : '',
+                        tags
+                    }) as any;
+                });
+                subscriber.next(articles);
+                subscriber.complete();
+            })
+        });
     }
 }

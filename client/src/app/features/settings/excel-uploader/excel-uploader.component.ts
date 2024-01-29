@@ -7,11 +7,12 @@ import { AppActions } from '@actions/app.actions';
 import { ArticleActions } from '@actions/article.actions';
 import { ButtonModule } from 'primeng/button';
 import { Table, TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { EditableCalendarComponent } from '@shared/components/editable-calendar/editable-calendar.component';
 import { EditableTextComponent } from '@shared/components/editable-text/editable-text.component';
-import  { Workbook } from 'exceljs';
-import dayjs from 'dayjs';
-import { Subscription, delay, from } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { ProgressSpinnerService } from '@shared/services/progress-spinner.service';
 
 @Component({
     selector: 'app-excel-uploader',
@@ -19,7 +20,7 @@ import { Subscription, delay, from } from 'rxjs';
     imports: [
         CommonModule, FormsModule,
         EditableTextComponent, EditableCalendarComponent,
-        ButtonModule, TableModule,
+        ButtonModule, TableModule, TooltipModule, TooltipDirective
     ],
     templateUrl: './excel-uploader.component.html',
     styleUrl: './excel-uploader.component.scss',
@@ -36,12 +37,13 @@ export class ExcelUploaderComponent implements OnDestroy {
     private _store$ = inject(Store);
     private _scannedActionsSubject$ = inject(ScannedActionsSubject);
     private _elementRef = inject(ElementRef);
+    private _spinnerService = inject(ProgressSpinnerService);
     public tableValue: any[] = [];
     public editable?: { index?: number; type?: string } = {};
     public messageType = {
         UpdateArticle: 'update article',
         UploadArticles: 'upload articles',
-        ChangeEditableMode: 'change editable mode'
+        ChangeEditableMode: 'change editable mode',
     };
     private _inproccess = false;
     private _subscriptions: Subscription[] = [
@@ -54,73 +56,25 @@ export class ExcelUploaderComponent implements OnDestroy {
         if (!(files && files.length)) {
             return;
         }
-        const names = ['', 'date', 'articleType', 'featured', 'category', 'source', 'author', 'authorLink', 'title', 'link', 'subject', 'edition', 'tags'];
-        const articles: any[] = [];
-        let isHeader = true;
-        const fileReader = new FileReader();
-        fileReader.onload = async ({target}) => {
-            const workbook = new Workbook();
-            if (target?.result) {
-                await workbook.xlsx.load(target.result as any);
-                workbook.worksheets[0].eachRow((row) => {
-                    if (isHeader) {
-                        isHeader = false;
-                    } else {
-                        const rowData: {[key: string]: any} = {};
-                        row.eachCell((cell, cellIndex) => {
-                            if (names[cellIndex]) {
-                                const key = names[cellIndex];
-                                let value = cell.text;
-                                if (['date', 'edition'].includes(key)) {
-                                    value = dayjs(value).format('YYYY-MM-DD');
-                                    if (value === 'Invalid Date') {
-                                        value = '';
-                                    }
-                                }
-                                // if (key === 'ed') {
-
-                                // }
-                                rowData[key] = value;
-                            }
-                        });
-                        articles.push(rowData);
-                    }
-                });
+        this._spinnerService.activateSpinner();
+        this._store$.dispatch(ArticleActions.getArticlesFromExcel({
+            file: files[0],
+            callback: (articles) => {
+                this.tableValue = articles;
+                this._spinnerService.deactivateSpinner();
             }
-            this.tableValue = articles.map((article) => ({
-                ...article,
-                tags: article.tags ? (article.tags ?? '').split(',').map((tag: string) => tag.trim()) : []
-            }));
-            // console.log(this.tableValue);
-            // console.log(JSON.stringify([this.tableValue[0],this.tableValue[10],this.tableValue[20],this.tableValue[30],]));
-            if (!this._onResize) {
-                this._onResize = () => {
-                    const row = this._elementRef.nativeElement.querySelector('.row');
-                    if (row) {
-                        const { height } = row.getBoundingClientRect();
-                        this.table.virtualScrollItemSize = height;
-                    }
-                };
-                const subscription = from([true]).pipe(delay(0)).subscribe(() => {
-                    this._onResize();
-                    subscription.unsubscribe();
-                });
-            }
-        };
-        fileReader.readAsArrayBuffer(files[0]);
+        }));
     }
     onMessage(type: string, index?: number, update?: any) {
         switch (type) {
             case this.messageType.ChangeEditableMode:
-                {
-                    if ((index || index === 0) && update) {
-                        this.editable = {
-                            index,
-                            type: `${update}`
-                        }
-                    } else {
-                        this.editable = undefined;
+                if ((index || index === 0) && update) {
+                    this.editable = {
+                        index,
+                        type: `${update}`
                     }
+                } else {
+                    this.editable = undefined;
                 }
                 break;
             case this.messageType.UpdateArticle:
@@ -135,19 +89,20 @@ export class ExcelUploaderComponent implements OnDestroy {
                 }
                 break;
             case this.messageType.UploadArticles:
-                {
-                    this._inproccess = true;
-                    this._store$.dispatch(ArticleActions.addParsedArticles({
-                        articles: this.tableValue,
-                        callback: (error) => {
-                            if (error) {
-                                const { header, message } = error;
-                                this._store$.dispatch(AppActions.showConfirmDialog({ header, message, accept: { label: 'Close' }}));
-                            }
-                            this._inproccess = false;
+                this._inproccess = true;
+                this._store$.dispatch(ArticleActions.addParsedArticles({
+                    articles: this.tableValue.map((value) => ({
+                        ...value,
+                        tags: (value.tags || '').split(',').map((tag: string) => tag.trim())
+                    })),
+                    callback: (error) => {
+                        if (error) {
+                            const { header, message } = error;
+                            this._store$.dispatch(AppActions.showConfirmDialog({ header, message, accept: { label: 'Close' }}));
                         }
-                    }));
-                }
+                        this._inproccess = false;
+                    }
+                }));
                 break;
             default:
                 break;
