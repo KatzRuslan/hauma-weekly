@@ -179,7 +179,7 @@
                     </div>
                 </div>
             </th>
-            <th class="article-subject-cell">
+            <th class="article-subject-cell" *ngIf="authorized">
                 <div class="flex align-items-center">
                     <div class="">
                         <span class="">Subject</span>
@@ -288,7 +288,7 @@
                     <a [href]="article.link" class="text-color no-underline hover:underline" target="_blank">{{article.title}}</a>
                 </div>
             </td>
-            <td class="article-subject-cell">
+            <td class="article-subject-cell" *ngIf="authorized">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.subject" tooltipPosition="top">
                     <span class="">{{article.subject}}</span>
                 </div>

@@ -80,10 +80,6 @@ export class ArticlesComponent implements OnDestroy {
     public tableValue: ITableArticle[] = [];
     createTableValue({ articles, searchText, selectedCategories, selectedSources, selectedArticleTypes, dateFrom, dateTo, issueDateFrom, issueDateTo, authorized }: IArticleSignal) {
         this.tableValue = articles.filter((article: ITableArticle) => {
-            // if (searchText && searchText.length > 3 && searchText.startsWith('#')) {
-            //     const searchTag = searchText.slice(1).toLowerCase();
-            //     return article.tags.some((tag) => tag.toLowerCase().startsWith(searchTag));
-            // }
             if (searchText && `${article.title}`.toLowerCase().indexOf(searchText) < 0 && `${article.authorName}`.toLowerCase().indexOf(searchText) < 0 && !article.tags.some((tag) => tag.toLowerCase().startsWith(searchText))) {
                 return false;
             }

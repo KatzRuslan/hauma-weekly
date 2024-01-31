@@ -68,7 +68,7 @@ export class ArticleDialogComponent implements OnInit {
         articleTypeId: true,
         categoryId: true,
         sourceId: true,
-        authorId: false,
+        authorId: true,
     };
     public inproccess = false;
     get formDisabled() {
@@ -345,10 +345,7 @@ export class ArticleDialogComponent implements OnInit {
                 this.featuredOptions.push(featured);
             }
         });
-        console.log(this.featuredOptions);
         if (this._dynamicDialogConfig.data) {
-            this.fieldModes.authorId  = true;
-            //
             const authorId = this.formGroup.get('authorId');
             authorId?.setValue(this._dynamicDialogConfig.data.authorId);
             authorId?.updateValueAndValidity();

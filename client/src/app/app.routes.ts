@@ -3,7 +3,7 @@ import { CanActivateFn, Routes } from '@angular/router';
 import { RoutingGuardService } from '@shared/services/routing.guard'
 
 const canActivateSettings: CanActivateFn = () => {
-  return inject(RoutingGuardService).canActivate();
+    return inject(RoutingGuardService).canActivate();
 };
 export const routes: Routes = [
     {
