@@ -50,7 +50,7 @@ export class UtilsService {
             { header: 'Type', key: 'articleType', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
             { header: 'Featured', key: 'featured', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
             { header: 'Category', key: 'category', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
-            { header: 'Source', key: 'source', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
+            { header: 'Platform', key: 'source', width: 16, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
             { header: 'Author', key: 'author', width: 26, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
             { header: 'Author Link', key: 'authorLink', width: 36, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
             { header: 'Title', key: 'title', width: 40, style: { font: { name: 'Roboto', family: 4, size: 11, bold: true } } },
