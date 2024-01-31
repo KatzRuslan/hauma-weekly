@@ -48,3 +48,20 @@ body {
 .hover\:visible-none {
     visibility: visible;
 }
+
+$placeholder-color: var(--surface-400);
+::-webkit-input-placeholder {
+    color: $placeholder-color;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: $placeholder-color;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color: $placeholder-color;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: $placeholder-color;
+}
+.p-dropdown .p-dropdown-label.p-placeholder {
+    color: $placeholder-color;
+}
