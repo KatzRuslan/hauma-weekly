@@ -1,9 +1,7 @@
-// import { Controller, Res, Headers, Body, Get, Post } from '@nestjs/common';
-import { Controller, Res, Body, Get, Post } from '@nestjs/common';
+import { Controller, Res, Body, Param, Get, Post, Delete } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation } from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
-// import { Public } from './sessions.decorator';
 
 @Controller('authors')
 export class AuthorsController {
@@ -17,5 +15,10 @@ export class AuthorsController {
     @ApiOperation({ summary: 'authors: post' })
     async addAuthor(@Body() { author }: { author: any }, @Res() res: Response) {
         res.send(await this._authorsService.addAuthor(author));
+    }
+    @Delete('/:id')
+    @ApiOperation({ summary: 'authors: delete' })
+    async removeAuthor(@Param('id') id, @Res() res: Response) {
+        res.send(await this._authorsService.removeAuthor(id));
     }
 }

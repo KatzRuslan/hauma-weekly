@@ -2,7 +2,7 @@ import { Controller, Res, Body, Param, Get, Post, Put, Delete } from '@nestjs/co
 import { Response } from 'express';
 import { ApiOperation } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
-import { ISubmitArticle, IArticle, IParsedArticle } from '../api.interfaces';
+import { ISubmitArticle, IParsedArticle } from '../api.interfaces';
 
 @Controller('articles')
 export class ArticlesController {

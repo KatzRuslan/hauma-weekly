@@ -13,4 +13,8 @@ export class AuthorsService {
         await this._appService.post(author, 'authors', 'link');
         return author;
     }
+    async removeAuthor(id: string) {
+        await this._appService.delete('authors', id);
+        return { ok: true };
+    }
 }
