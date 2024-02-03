@@ -4,18 +4,15 @@ import { AppService } from 'src/app.service';
 
 @Injectable()
 export class SessionsService {
-    constructor(
-        private _appService: AppService,
-        private _jwtService: JwtService
-    ) {}
+    constructor(private _appService: AppService, private _jwtService: JwtService) {}
     private _jwtOptions = { secret: 'xxxx_hauma_secret_xxxxxxxxxxxxxx' };
     async verifyToken(token: string) {
         try {
-            if (await this._jwtService.verify(token, this._jwtOptions)) {
-                return true;
-            } else {
+            const { role } = await this._jwtService.verify(token, this._jwtOptions);
+            if (!role) {
                 throw new HttpException('Unknown Error', 401);
             }
+            return role;
         } catch (error) {
             throw new HttpException('Unknown Error', 401);
         }
@@ -26,7 +23,7 @@ export class SessionsService {
         if (!user) {
             throw new HttpException('unauthorized', 401);
         }
-        const payload = { id: user.id, username: username };
+        const payload = { id: user.id, username: username, role: user.role };
         const token = this._jwtService.sign(payload, this._jwtOptions);
         return {
             id: user.id,
@@ -41,7 +38,7 @@ export class SessionsService {
         if (!user) {
             throw new HttpException('unauthorized', 401);
         }
-        const payload = { id: userId, username: user.credentials.username };
+        const payload = { id: userId, username: user.credentials.username, role: user.role };
         const token = this._jwtService.sign(payload, this._jwtOptions);
         return {
             id: userId,

@@ -6,22 +6,24 @@
     [virtualScroll]="true" [virtualScrollItemSize]="0">
     <ng-template pTemplate="caption">
         <div class="flex justify-content-between align-items-center">
-            <div class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                    #searchInput pInputText type="text"
-                    class="w-30rem"
-                    (input)="onSearchFilter(searchInput.value)"
-                    placeholder="Search title, author and tag" />
-            </div>
-            <div class="">
-                <p-button *ngIf="authorized"
-                    icon="pi pi-plus text-xl"
-                    styleClass="text-xs w-2rem h-2rem"
-                    [rounded]="true" [outlined]="true" [plain]="true"
-                    pTooltip="Add Aricle" tooltipPosition="top"
-                    (onClick)="onMessage(messageType.OpenAddAricleDialog)">
-                </p-button>
+            <div class="flex align-items-center gap-4">
+                <div class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                        #searchInput pInputText type="text"
+                        class="w-30rem"
+                        (input)="onSearchFilter(searchInput.value)"
+                        placeholder="Search title, author and tag" />
+                </div>
+                <div class="">
+                    <p-button *ngIf="authorized"
+                        icon="pi pi-plus text-xl"
+                        styleClass="text-xs w-2rem h-2rem"
+                        [rounded]="true" [outlined]="true" [plain]="true"
+                        pTooltip="Add Aricle" tooltipPosition="top"
+                        (onClick)="onMessage(messageType.OpenAddAricleDialog)">
+                    </p-button>
+                </div>
             </div>
             <div class="flex align-items-center">
                 <p-button *ngIf="authorized"

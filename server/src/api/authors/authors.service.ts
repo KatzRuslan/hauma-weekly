@@ -13,6 +13,10 @@ export class AuthorsService {
         await this._appService.post(author, 'authors', 'link');
         return author;
     }
+    async updateAuthor(id: string, author: IAuthor) {
+        await this._appService.put(author, 'authors', id, 'link');
+        return author;
+    }
     async removeAuthor(id: string) {
         await this._appService.delete('authors', id);
         return { ok: true };

@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { SessionsActions } from '@actions/sessions.actions';
 import { ArticleActions } from '@actions/article.actions';
 import { SessionsService } from './sessions.service';
-import { firstValueFrom, map, tap } from 'rxjs';
+import { firstValueFrom, tap } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ConfigService {
@@ -13,8 +13,8 @@ export class ConfigService {
         const userId = sessionStorage.getItem('userId');
         if (userId) {
             await firstValueFrom(this._sessionsService.refreshToken(userId).pipe(
-                tap(({ fullname, token }) => {
-                    this._store$.dispatch(SessionsActions.signInSuccess({ id: userId, fullname, token }));
+                tap(({ fullname, token, role }) => {
+                    this._store$.dispatch(SessionsActions.signInSuccess({ id: userId, fullname, token, role }));
                 })
             ));
         }

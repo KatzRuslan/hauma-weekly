@@ -13,6 +13,12 @@ export class ArticleService {
     addAuthor(author: IAuthor) {
         return this._httpClient.post<IAuthor>('api/authors', { author }, { headers: { Source: 'authors' } });
     }
+    updateAuthor(id: string, author: IAuthor) {
+        return this._httpClient.put<IAuthor>(`api/authors/${id}`, { author }, { headers: { Source: 'authors' } });
+    }
+    removeAuthor(id: string) {
+        return this._httpClient.delete(`api/authors/${id}`, { headers: { Source: 'authors' } });
+    }
     getCategories() {
         return this._httpClient.get<ICategory[]>('api/categories', { headers: { Source: 'categories' } });
     }

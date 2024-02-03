@@ -15,6 +15,7 @@
             </div>
         </div>
     </ng-template>
+    <!--  
     <ng-template pTemplate="summary">
         <div class="flex justify-content-end">
             <div class="px-2">
@@ -28,25 +29,44 @@
             </div>
         </div>
     </ng-template>
+    -->
     <ng-template pTemplate="header">
         <tr>
-            <th class="w-3rem"></th>
             <th class="w-4"><div class=""><span class="">Author Name</span></div></th>
             <th class=""><div class=""><span class="">Author Link</span></div></th>
+            <th class="w-3rem"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-author>
         <tr class="row">
+            <td class="w-4">
+                <app-editable-text
+                    [value]="author.name"
+                    [mode]="editable?.id==author.id && editable?.type=='name'"
+                    textStyleClass="p-inputtext no-border max-w-full"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateAuthor,author,{name:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,author,$event?'name':'')">
+                </app-editable-text>
+            </td>
+            <td class="">
+                <app-editable-text
+                    [value]="author.link"
+                    [mode]="editable?.id==author.id && editable?.type=='link'"
+                    textStyleClass="p-inputtext no-border max-w-full"
+                    inputStyleClass="w-12"
+                    (onValueChange)="onMessage(messageType.UpdateAuthor,author,{link:$event})"
+                    (onModeChange)="onMessage(messageType.ChangeEditableMode,author,$event?'link':'')">
+                </app-editable-text>
+            </td>
             <td class="w-3rem">
                 <p-button
-                    icon="pi pi-pencil"
+                    icon="pi pi-trash"
                     styleClass=""
                     [rounded]="true" [text]="true" [plain]="true"
-                    (onClick)="onMessage('', author)">
+                    (onClick)="onMessage(messageType.RemoveAuthor, author)">
                 </p-button>
             </td>
-            <td class="w-4"><div class=""><span class="">{{author.name}}</span></div></td>
-            <td class=""><div class=""><span class="">{{author.link}}</span></div></td>
         </tr>
     </ng-template>
 </p-table>

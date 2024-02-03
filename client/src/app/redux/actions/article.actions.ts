@@ -9,6 +9,10 @@ export const ArticleActions = createActionGroup({
         'Get Authors Success': props<{ authors: IAuthor[]}>(),
         'Add Author': props<{ author: IAuthor, callback: (error?: any) => void }>(),
         'Add Author Success': props<{ author: IAuthor }>(),
+        'Update Author': props<{ authorId: string; author: IAuthor, callback: (error?: any) => void }>(),
+        'Update Author Success': props<{ authorId: string; author: IAuthor }>(),
+        'Remove Author': props<{ authorId: string }>(),
+        'Remove Author Success': props<{ authorId: string }>(),
         //
         'Get Categories': emptyProps(),
         'Get Categories Success': props<{ categories: ICategory[]}>(),

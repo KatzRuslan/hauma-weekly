@@ -6,7 +6,7 @@ export const SessionsActions = createActionGroup({
     events: {
         'Empty Sessions Event': emptyProps(),
         'Sign In': props<{ credentials: ICredential; callback: (error?: any) => void }>(),
-        'Sign In Success': props<{ id: string; fullname: string; token: string }>(),
+        'Sign In Success': props<{ id: string; fullname: string; token: string; role: string }>(),
         'Sign Out': emptyProps()
     }
 });

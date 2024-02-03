@@ -1,7 +1,8 @@
-import { Controller, Res, Body, Param, Get, Post, Delete } from '@nestjs/common';
+import { Controller, Res, Body, Param, Get, Post, Put, Delete } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation } from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
+import { IAuthor } from '../api.interfaces';
 
 @Controller('authors')
 export class AuthorsController {
@@ -15,6 +16,11 @@ export class AuthorsController {
     @ApiOperation({ summary: 'authors: post' })
     async addAuthor(@Body() { author }: { author: any }, @Res() res: Response) {
         res.send(await this._authorsService.addAuthor(author));
+    }
+    @Put('/:id')
+    @ApiOperation({ summary: 'articles: post' })
+    async updateArticle(@Param('id') id, @Body() { author }: { author: IAuthor }, @Res() res: Response) {
+        res.send(await this._authorsService.updateAuthor(id, author));
     }
     @Delete('/:id')
     @ApiOperation({ summary: 'authors: delete' })

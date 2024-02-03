@@ -21,6 +21,9 @@ export const reducer = createReducer(
     on(ArticleActions.removeArticleSuccess, (state, { articleId }) => adapter.removeOne(state, 'articles', articleId)),
     //
     on(ArticleActions.getAuthorsSuccess, (state, { authors }) => ({ ...state, authors })),
+    on(ArticleActions.updateAuthorSuccess, (state, { authorId, author }) => adapter.updateOne(state, 'authors', { id: authorId, changes: author })),
+    on(ArticleActions.removeAuthorSuccess, (state, { authorId }) => adapter.removeOne(state, 'authors', authorId)),
+    //
     on(ArticleActions.getCategoriesSuccess, (state, { categories }) => ({ ...state, categories })),
     on(ArticleActions.getArticleTypesSuccess, (state, { articleTypes }) => ({ ...state, articleTypes })),
     on(ArticleActions.getSourcesSuccess, (state, { sources }) => ({ ...state, sources })),

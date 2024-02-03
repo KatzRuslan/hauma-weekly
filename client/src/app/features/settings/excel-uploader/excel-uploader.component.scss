@@ -21,26 +21,4 @@ $styles: (
         //     background: $background;
         // }
     }
-    .table-icon-button.p-button.p-button-icon-only.p-button-rounded {
-        width: 1.4rem;
-        height: 1.4rem;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .p-button-icon {
-            font-size: .5rem;
-        }
-    }
-    .p-inputtext {
-        background: transparent;
-        &.no-border {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
-    .no-border {
-        border-color: transparent;
-    }
 }

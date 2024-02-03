@@ -14,8 +14,8 @@ export class SessionsGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const token = request.headers.authorization ?? undefined;
         if (token) {
-            const verify = await this._sessionsService.verifyToken(token);
-            if (verify) {
+            const role = await this._sessionsService.verifyToken(token);
+            if (role === 'admin') {
                 return true;
             }
         } else if (`${request.headers.simple}` === 'true') {

@@ -15,21 +15,21 @@ export class SideMenuComponent {
             name: 'Authors',
             routerLink: ['authors']
         },
-        {
-            name: 'Categories',
-            routerLink: ['categories']
-        },
-        {
-            name: 'Sources',
-            routerLink: ['sources']
-        },
-        {
-            name: 'Types',
-            routerLink: ['types']
-        },
-        {
-            name: 'Import Data from Excel',
-            routerLink: ['excel-uploader']
-        }
+        // {
+        //     name: 'Categories',
+        //     routerLink: ['categories']
+        // },
+        // {
+        //     name: 'Sources',
+        //     routerLink: ['sources']
+        // },
+        // {
+        //     name: 'Types',
+        //     routerLink: ['types']
+        // },
+        // {
+        //     name: 'Import Data from Excel',
+        //     routerLink: ['excel-uploader']
+        // }
     ];
 }

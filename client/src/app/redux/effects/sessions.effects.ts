@@ -19,10 +19,10 @@ export class SessionsEffects {
         () => this._actions$.pipe(
             ofType(SessionsActions.signIn),
             mergeMap(({credentials, callback}) => this._sessionsService.signIn(credentials).pipe(
-                map(({ id, fullname, token }) => {
+                map(({ id, fullname, token, role }) => {
                     sessionStorage.setItem('userId', id);
                     callback();
-                    return SessionsActions.signInSuccess({ id, fullname, token })
+                    return SessionsActions.signInSuccess({ id, fullname, token, role })
                 }),
                 catchError((error) => {
                     callback(error);

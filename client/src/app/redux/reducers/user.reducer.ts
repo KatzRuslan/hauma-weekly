@@ -7,6 +7,6 @@ export const featureKey = 'user';
 export const initialState: IState = null as unknown as IState;
 export const reducer = createReducer(
     initialState,
-    on(SessionsActions.signInSuccess, (state, { id, fullname, token }) => ({ ...state, ...{ id, fullname, token }})),
+    on(SessionsActions.signInSuccess, (state, { id, fullname, token, role }) => ({ ...state, ...{ id, fullname, token, role }})),
     on(SessionsActions.signOut, () => null as unknown as IState),
 )

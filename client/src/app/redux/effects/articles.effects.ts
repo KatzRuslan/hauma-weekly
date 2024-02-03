@@ -28,8 +28,6 @@ export class ArticlesEffects {
             ofType(ArticleActions.getArticlesFromExcel),
             mergeMap(({ file, callback }) => this._utilsService.getArticlesFromExcel(file).pipe(
                 map((d: any) => {
-                    // const json = this._utilsService.getArticlesFromExcel(file);
-                    // console.log(json);
                     callback(d);
                     return ArticleActions.emptyArticleEvent()
                 })                
@@ -145,7 +143,7 @@ export class ArticlesEffects {
                 })
             ))
         )
-    ); 
+    );
     updateArticle$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.updateArticle),
@@ -244,7 +242,35 @@ export class ArticlesEffects {
                 })
             ))
         )
-    ); 
+    );
+    updateAuthor$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(ArticleActions.updateAuthor),
+            mergeMap(({ authorId, author, callback }) => this._articleService.updateAuthor(authorId, author).pipe(
+                map(() => {
+                    callback();
+                    return ArticleActions.updateAuthorSuccess({ authorId, author });
+                }),
+                catchError((error) => {
+                    callback(error);
+                    return of(ArticleActions.emptyArticleEvent())
+                })
+            ))
+        )
+    );
+    removeAuthor$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(ArticleActions.removeAuthor),
+            mergeMap(({ authorId }) => this._articleService.removeAuthor(authorId).pipe(
+                map(() => {
+                    return ArticleActions.removeAuthorSuccess({ authorId });
+                }),
+                catchError((error) => {
+                    return of(ArticleActions.emptyArticleEvent())
+                })
+            ))
+        )
+    );
     getCategories$ = createEffect(
         () => this._actions$.pipe(
             ofType(ArticleActions.getCategories),
