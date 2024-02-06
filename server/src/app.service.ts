@@ -1,5 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
+import * as nodemailer from 'nodemailer';
+import * as handlebars from 'handlebars';
 import { join } from 'path';
 
 const databaseUrl = join(__dirname, '..', 'assets/database.json');
@@ -90,5 +92,26 @@ export class AppService {
         const domain = candidate.split('/')[0].replace('∇', '://');
         const [selector] = `${candidate}`.replace('https∇', '').replace('http∇', '').replace('www.', '').split('.');
         return { domain, selector };
+    }
+    async sendEmail(address: string, subject: string, path: string, context: any) {
+        const mailerClient: nodemailer.Transporter = nodemailer.createTransport({
+            host: process.env.MAILER_HOST,
+            port: process.env.MAILER_PORT,
+            auth: {
+                user: process.env.MAILER_USER,
+                pass: process.env.MAILER_PASS
+            }
+        });
+        const templatePath = join(__dirname, `./email-templates/${path}.html`);
+        const source = fs.readFileSync(templatePath, { encoding: 'utf-8' });
+        const template: any = handlebars.compile(source);
+        const html: string = template(context);
+        return await mailerClient.sendMail({
+            from: process.env.MAILER_FROM,
+            to: address,
+            subject,
+            html,
+            attachments: null
+        });
     }
 }

@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ICredential } from '@shared/interfaces/user.interfaces';
+import { ICompleteRegistration, ICredential, IRegistration } from '@shared/interfaces/user.interfaces';
 
 export const SessionsActions = createActionGroup({
     source: 'Sessions',
@@ -7,6 +7,8 @@ export const SessionsActions = createActionGroup({
         'Empty Sessions Event': emptyProps(),
         'Sign In': props<{ credentials: ICredential; callback: (error?: any) => void }>(),
         'Sign In Success': props<{ id: string; fullname: string; token: string; role: string }>(),
-        'Sign Out': emptyProps()
+        'Sign Out': emptyProps(),
+        'Registration': props<IRegistration>(),
+        'CompleteRegistration': props<ICompleteRegistration>()
     }
 });

@@ -3,12 +3,7 @@ import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { SessionsActions } from '@actions/sessions.actions';
 import { SessionsService } from '@shared/services/sessions.service';
-// import { AppActions } from '@actions/app.actions';
-// import { SettingsActions } from '@actions/settings.actions';
-// import { getEnvironments } from '@selectors/settings.selectors';
-// import { SettingsService } from '@settings/settings.service';
-import { catchError, map, mergeMap, of, tap, withLatestFrom} from 'rxjs';
-// import { IEnvironment, IUser } from '@shared/interfaces/settings.interfaces';
+import { catchError, map, mergeMap, of} from 'rxjs';
 
 @Injectable()
 export class SessionsEffects {
@@ -22,7 +17,7 @@ export class SessionsEffects {
                 map(({ id, fullname, token, role }) => {
                     sessionStorage.setItem('userId', id);
                     callback();
-                    return SessionsActions.signInSuccess({ id, fullname, token, role })
+                    return SessionsActions.signInSuccess({ id, fullname, token, role });
                 }),
                 catchError((error) => {
                     callback(error);
@@ -38,6 +33,37 @@ export class SessionsEffects {
                 sessionStorage.removeItem('userId');
                 return SessionsActions.emptySessionsEvent();
             })
+        )
+    );
+    registration$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(SessionsActions.registration),
+            mergeMap(({fullname, email, encoded, callback}) => this._sessionsService.registration({fullname, email, encoded}).pipe(
+                map(() => {
+                    callback();
+                    return SessionsActions.emptySessionsEvent();
+                }),
+                catchError((error) => {
+                    callback(error);
+                    return of(SessionsActions.emptySessionsEvent())
+                })
+            ))
+        )
+    );
+    completeRegistration$ = createEffect(
+        () => this._actions$.pipe(
+            ofType(SessionsActions.completeRegistration),
+            mergeMap(({fullname, email, count, role, credentials, callback}) => this._sessionsService.completeRegistration({fullname, email, count, role, credentials}).pipe(
+                map(({ id, fullname, token, role }) => {
+                    sessionStorage.setItem('userId', id);
+                    callback();
+                    return SessionsActions.signInSuccess({ id, fullname, token, role });
+                }),
+                catchError((error) => {
+                    callback(error);
+                    return of(SessionsActions.emptySessionsEvent())
+                })
+            ))
         )
     );
 }

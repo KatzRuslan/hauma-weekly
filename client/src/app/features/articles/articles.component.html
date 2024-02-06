@@ -251,7 +251,7 @@
             </td>
             <td class="article-date-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.date | date : 'dd-MMM-yyyy'}}</span>
+                    <span class="font-medium">{{article.date | date : 'dd-MMM-yyyy'}}</span>
                 </div>
                 <div class="opacity-60 absolute left-0 right-0 bottom-0 mb-1 px-3 white-space-nowrap overflow-hidden text-overflow-ellipsis" *ngIf="article.tags.length">
                     <i class="pi pi-tag text-xs"></i>
@@ -262,42 +262,42 @@
             </td>
             <td class="article-type-cell" *ngIf="authorized">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.articleTypeName" tooltipPosition="top">
-                    <span class="">{{article.articleTypeName}}</span>
+                    <span class="font-medium">{{article.articleTypeName}}</span>
                 </div>
             </td>
             <td class="article-featured-cell" *ngIf="authorized">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.featured" tooltipPosition="top">
-                    <span class="">{{article.featured}}</span>
+                    <span class="font-medium">{{article.featured}}</span>
                 </div>
             </td>
             <td class="article-category-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.categoryName" tooltipPosition="top">
-                    <span class="">{{article.categoryName}}</span>
+                    <span class="font-medium">{{article.categoryName}}</span>
                 </div>
             </td>
             <td class="article-source-cell" *ngIf="authorized">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.sourceName" tooltipPosition="top">
-                    <span class="">{{article.sourceName}}</span>
+                    <span class="font-medium">{{article.sourceName}}</span>
                 </div>
             </td>
             <td class="article-author-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.authorName" tooltipPosition="top">
-                    <a [href]="article.authorLink" class="text-color no-underline hover:underline" target="_blank">{{article.authorName}}</a>
+                    <a [href]="article.authorLink" class="text-color font-medium no-underline hover:underline" target="_blank">{{article.authorName}}</a>
                 </div>
             </td>
             <td class="article-title-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.title" tooltipPosition="top">
-                    <a [href]="article.link" class="text-color no-underline hover:underline" target="_blank">{{article.title}}</a>
+                    <a [href]="article.link" class="text-color font-medium no-underline hover:underline" target="_blank">{{article.title}}</a>
                 </div>
             </td>
             <td class="article-subject-cell" *ngIf="authorized">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis" appTooltip [pTooltip]="article.subject" tooltipPosition="top">
-                    <span class="">{{article.subject}}</span>
+                    <span class="font-medium">{{article.subject}}</span>
                 </div>
             </td>
             <td class="article-edition-cell">
                 <div class="white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                    <span class="">{{article.edition | date : 'dd-MMM-yyyy'}}</span>
+                    <span class="font-medium">{{article.edition | date : 'dd-MMM-yyyy'}}</span>
                 </div>
             </td>
             <td class="article-button-cell" *ngIf="authorized">

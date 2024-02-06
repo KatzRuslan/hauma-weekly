@@ -47,4 +47,16 @@ export class SessionsService {
             token
         };
     }
+    async registration(fullname: string, email: string, encoded: string, origin: string) {
+        const users = await this._appService.get('users');
+        if ((users || []).find((user) => user.fullname === fullname || user.email === email)) {
+            throw new HttpException(`already exists`, 403);
+        }
+        await this._appService.sendEmail(email, 'Confirm registation at Hauma Info', 'verify-registation', { fullname, email, url: `${origin}/complete-registration/${encoded}` });
+        return {
+            ok: true,
+            encoded,
+            origin
+        };
+    }
 }

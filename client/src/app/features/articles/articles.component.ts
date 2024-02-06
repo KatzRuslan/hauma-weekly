@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppActions } from '@actions/app.actions';
 import { ArticleActions } from '@actions/article.actions';
-import { getUserFullname } from '@selectors/user.selectors';
+import { isAdmin } from '@selectors/user.selectors';
 import { getArticleTypes, getArticlesTable, getAuthors, getCategories, getSources } from '@selectors/features.selectors';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
@@ -14,7 +14,7 @@ import { Table, TableModule } from 'primeng/table';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription, delay, from, map } from 'rxjs';
+import { Subscription, delay, from } from 'rxjs';
 import { ITableArticle, IArticleSignal } from '@shared/interfaces/features.interfaces';
 import { TooltipDirective } from '@shared/directives/tooltip.directive';
 import { ArticleDialogComponent } from './article-dialog/article-dialog.component';
@@ -66,7 +66,7 @@ export class ArticlesComponent implements OnDestroy {
     public authorized = false;
     private _subscriptions: Subscription[] = [
         this._store$.select(getArticlesTable).subscribe((articles) => this._articleSignal.update((data: any) => ({ ...data, articles }))),
-        this._store$.select(getUserFullname).pipe(map((fullName) => !!fullName)).subscribe((authorized) => {
+        this._store$.select(isAdmin).subscribe((authorized) => {
             this.authorized = authorized;
             this._articleSignal.update((data: any) => ({ ...data, selectedSources: [], selectedArticleTypes: [], authorized }));
         })
@@ -80,6 +80,9 @@ export class ArticlesComponent implements OnDestroy {
     public tableValue: ITableArticle[] = [];
     createTableValue({ articles, searchText, selectedCategories, selectedSources, selectedArticleTypes, dateFrom, dateTo, issueDateFrom, issueDateTo, authorized }: IArticleSignal) {
         this.tableValue = articles.filter((article: ITableArticle) => {
+            if (!authorized && !article.edition) {
+                return false
+            }
             if (searchText && `${article.title}`.toLowerCase().indexOf(searchText) < 0 && `${article.authorName}`.toLowerCase().indexOf(searchText) < 0 && !article.tags.some((tag) => tag.toLowerCase().startsWith(searchText))) {
                 return false;
             }

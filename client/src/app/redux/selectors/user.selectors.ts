@@ -19,3 +19,6 @@ export const getInterceptorHeaders = createSelector(getToken, (token) => {
         SimpleDate: token ? '' : `${utc}`
     };
 });
+export const isAdmin = createSelector(
+    selectFeature, (state): boolean => state?.role === 'admin'
+);

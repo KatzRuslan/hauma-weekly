@@ -1,6 +1,6 @@
 import { Directive, Input, OnDestroy, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { getUserFullname } from '@selectors/user.selectors';
+import { isAdmin } from '@selectors/user.selectors';
 import { Tooltip } from 'primeng/tooltip';
 import { Subject, Subscription, delay } from 'rxjs';
 
@@ -26,7 +26,7 @@ export class TooltipDirective implements OnDestroy {
             }
             this._tooltip._tooltipOptions.tooltipStyleClass = tooltipStyleClassArray.join(' ');
         }),
-        this._store$.select(getUserFullname).subscribe(() => this._watcher.next(''))
+        this._store$.select(isAdmin).subscribe(() => this._watcher.next(''))
     ];
     ngOnDestroy(): void {
         this._subscriptions.forEach((subscription) => subscription.unsubscribe());

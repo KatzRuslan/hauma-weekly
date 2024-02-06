@@ -1,0 +1,54 @@
+<div class="" [formGroup]="formGroup">
+    <div class="flex align-items-center mb-2">
+        <div class="w-10rem">
+            <span class="">Username</span>
+        </div>
+        <div class="">
+            <input
+                formControlName="username"
+                type="text" pInputText
+                class="w-24rem"
+                placeholder="User Name"
+                (input)="errorMessage=''"
+                (keyup.enter)="onKeyUpEnter()">
+        </div>
+    </div>
+    <div class="flex align-items-center mb-2">
+        <div class="w-10rem">
+            <span class="">Password</span>
+        </div>
+        <div class="">
+            <p-password
+                formControlName="password"
+                inputStyleClass="w-24rem"
+                placeholder="Password"
+                [feedback]="false"
+                [toggleMask]="true"
+                (ngModelChange)="errorMessage=''"
+                (keyup.enter)="onKeyUpEnter()">
+            </p-password>
+        </div>
+    </div>
+    <div class="flex justify-content-end mb-2">
+        <div class="flex justify-content-between w-24rem">
+            <div class="">
+                <a [routerLink]="['/registration']" class="text-color no-underline hover:underline hover:text-primary"><span class="">Registration</span></a>
+            </div>
+            <!-- <div class="">
+                <a [routerLink]="['/forgot-password']" class="text-color no-underline hover:underline hover:text-primary"><span class="">Forgot Password</span></a>
+            </div> -->
+        </div>
+    </div>
+    <div class="text-center pt-2 h-2rem"><span class="text-red-500 text-sm">{{errorMessage}}</span></div>
+    <div class="flex justify-content-center pt-2">
+        <div class="">
+            <p-button
+                label="Submit"
+                icon="pi pi-check"
+                [disabled]="formGroup.invalid || inproccess || !!errorMessage"
+                [rounded]="true" [outlined]="true"
+                (click)="onSubmit()">
+            </p-button>
+        </div>
+    </div>
+</div>

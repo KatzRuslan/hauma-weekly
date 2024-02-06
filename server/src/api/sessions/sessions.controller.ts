@@ -1,4 +1,4 @@
-import { Controller, Res, Body, Post } from '@nestjs/common';
+import { Controller, Headers, Res, Body, Post } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiOperation } from '@nestjs/swagger';
 import { SessionsService } from './sessions.service';
@@ -18,5 +18,13 @@ export class SessionsController {
     @ApiOperation({ summary: 'session: refresh-token' })
     async refreshToken(@Body() { id }: { id: string }, @Res() res: Response) {
         res.send(await this._sessionsService.refreshToken(id));
+    }
+    //
+    @Post('registration')
+    @Public()
+    @ApiOperation({ summary: 'session: registration' })
+    async registration(@Headers() { origin }, @Body() { fullname, email, encoded }: { fullname: string; email: string; encoded: string }, @Res() res: Response) {
+        // res.send([body]);
+        res.send(await this._sessionsService.registration(fullname, email, encoded, origin));
     }
 }
